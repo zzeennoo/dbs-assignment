@@ -5,6 +5,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="generator" content="Hugo 0.118.2">
+        <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
         <style>
         #banner {
             height: 360px;
@@ -18,5 +24,24 @@
         {% include 'header.html' %}
         <h1>The content is here</h1>
         {% include 'footer.html' %}
+
+        <script>
+            // Get references to the buttons
+            const loginButton = document.getElementById("loginBtn");
+            const signupButton = document.getElementById("signupBtn");
+          
+            // Define the URLs to navigate to
+            const loginUrl = "/login"; // Replace with the actual login page URL
+            const signupUrl = "/sign-up"; // Replace with the actual signup page URL
+          
+            // Add click event listeners to the buttons
+            loginButton.addEventListener("click", () => {
+              window.location.href = loginUrl;
+            });
+          
+            signupButton.addEventListener("click", () => {
+              window.location.href = signupUrl;
+            });
+          </script>
     </body>
 </html>
