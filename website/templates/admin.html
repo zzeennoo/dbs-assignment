@@ -260,7 +260,7 @@
                 // Perform an AJAX request to save the new patient data
                 $.ajax({
                     type: 'POST',
-                    url: 'path/to/your/php-script-for-saving-patient.php', // Adjust the path to your PHP script
+                    url: '/add_patient', // Adjust the path to your PHP script
                     data: formData,
                     success: function (response) {
                         // Handle success (e.g., close the modal, update the DataTable)
