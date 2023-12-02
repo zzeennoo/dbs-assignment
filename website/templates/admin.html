@@ -51,7 +51,6 @@
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div class="row">
 
@@ -65,13 +64,18 @@
 
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#patientsTable" onclick="changeTab(this)">
+                            <a class="nav-link active" href="#patient_list" onclick="changeTab(this)">
                                 Patient List
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#blankPage" onclick="changeTab(this)">
-                                Blank Page
+                            <a class="nav-link" href="#add_treatment" onclick="changeTab(this)">
+                                Add Treatment for Inpatient
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#add_examine" onclick="changeTab(this)">
+                                Add Examine for Outpatient
                             </a>
                         </li>
                         <!-- Add more sidebar items as needed -->
@@ -97,9 +101,6 @@
                                     <th>Address</th>
                                     <th>Date of Birth</th>
                                     <th>Gender</th>
-                                    <th>Doctor Assigned</th>
-                                    <th>Medicine</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,6 +108,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -150,14 +152,6 @@
                                             <label class="form-check-label" for="female">Female</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="doctorAssigned">Doctor Assigned</label>
-                                        <input type="text" class="form-control" id="doctorAssigned" name="doctorAssigned">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="medicine">Medicine</label>
-                                        <input type="text" class="form-control" id="medicine" name="medicine">
-                                    </div>
                                     <!-- Add more input fields as needed -->
                                 
                                     <!-- Submit button -->
@@ -169,14 +163,24 @@
                       </div>
                     </div>
 
-                    <!-- Content for Blank Page -->
-                    <div id="blankPageContent" style="display: none;">
-                        <h2 id="blankPage">Blank Page</h2>
+                    <!-- Content for Add Treatment -->
+                    <div id="addTreatmentContent" style="display: none;">
+                        <h2 id="treatmentTable">Treatment List</h2>
                         <!-- Blank Page Message -->
                         <div id="blankPageMessage">
-                            <p>This is a blank page. Add your content here.</p>
+                            <p>This is a blank page for treatment.</p>
                         </div>
                     </div>
+
+                    <!-- Content for Add Examine -->
+                    <div id="addExamineContent" style="display: none;">
+                        <h2 id="examineTable">Examine List</h2>
+                        <!-- Blank Page Message -->
+                        <div id="blankPageMessage">
+                            <p>This is a blank page for examine.</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -186,11 +190,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
     <script>
       function changeTab(tab) {
             // Hide all content sections
             $('#patientsTableContent').hide();
-            $('#blankPageContent').hide();
+            $('#addTreatmentContent').hide();
+            $('#addExamineContent').hide();
 
             // Remove 'active' class from all links
             $('#sidebar .nav-link').removeClass('active');
@@ -198,8 +204,10 @@
             // Show the selected content section
             if (tab.innerText === "Patient List") {
                 $('#patientsTableContent').show();
-            } else if (tab.innerText === "Blank Page") {
-                $('#blankPageContent').show();
+            } else if (tab.innerText === "Add Treatment for Inpatient") {
+                $('#addTreatmentContent').show();
+            } else if (tab.innerText === "Add Examine for Outpatient") {
+                $('#addExamineContent').show();
             }
 
             // Add 'active' class to the clicked link
@@ -208,81 +216,24 @@
             // Log the clicked tab for demonstration purposes
             console.log("Tab clicked: " + tab.innerText);
         }
+
        $(document).ready(function () {
             // Initialize DataTable with server-side processing
-            $('#patientsDataTable').DataTable({
-                /*"ajax": {
-                    "url": "", //the path to script
-                    "dataSrc": "data"
-                },
-                "columns": [
-                    { "data": "ID" },
-                    { "data": "Last_Name" },
-                    { "data": "First_Name" },
-                    { "data": "Phone_Number" },
-                    { "data": "Address" },
-                    { "data": "Date_of_Birth" },
-                    { "data": "Gender" },
-                    { "data": "Doctor_Assigned" },
-                    { "data": "Medicine" },
-                    { 
-                        "data": null,
-                        "render": function (data, type, row) {
-                            // Add buttons or links for actions (edit, delete, etc.)
-                            return '<button onclick="editPatient(' + row.ID + ')">Edit</button>';
-                        }
-                    }
-                ]*/
-            });
 
             // Show the modal when the "Add New Patient" button is clicked
             $('#addPatientButton').click(function () {
                 $('#addPatientModal').modal('show');
             });
 
-            // Handle form submission
-            $('#addPatientForm').submit(function (event) {
-                event.preventDefault();
-
-                // Get the form data
-                var formData = {
-                  lastName: $('#lastName').val(),
-                  firstName: $('#firstName').val(),
-                  phoneNumber: $('#phoneNumber').val(),
-                  address: $('#address').val(),
-                  dateOfBirth: $('#dateOfBirth').val(),
-                  gender: $('input[name="gender"]:checked').val(), // Assuming you have radio buttons for gender
-                  doctorAssigned: $('#doctorAssigned').val(),
-                  medicine: $('#medicine').val(),
-                  // Add more fields as needed
-              };
-
-                // Perform an AJAX request to save the new patient data
-                $.ajax({
-                    type: 'POST',
-                    url: '/add_patient', // Adjust the path to your PHP script
-                    data: formData,
-                    success: function (response) {
-                        // Handle success (e.g., close the modal, update the DataTable)
-                        $('#addPatientModal').modal('hide');
-                        // You may need to reload or update the DataTable with the new data
-                        // based on your specific implementation
-                        // $('#patientsDataTable').DataTable().ajax.reload();
-                    },
-                    error: function (error) {
-                        // Handle error
-                        console.error('Error:', error);
-                    }
-                });
-            });
+            
         });
 
         function editPatient(id) {
             // Implement logic to edit patient information
             console.log("Edit Patient clicked for ID: " + id);
         }
-    </script>
-
+    </script> 
+    
 </body>
 
 </html>
