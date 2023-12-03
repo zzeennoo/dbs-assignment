@@ -13,10 +13,10 @@ def login():
         phone_number = request.form.get('phone_number')
         password = request.form.get('password')
 
-        patient = Patient.query.filter_by(Phone_number=phone_number).first()
+        patient = Patient.query.filter_by(phone_number = phone_number).first()
 
         if patient:
-            if patient.Password == password:
+            if patient.password == password:
                 login_user(patient, remember=True)
                 return redirect(url_for('actor.patient'))
             else:

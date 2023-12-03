@@ -13,7 +13,6 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Longvu123@localhost/assignment2'
     ##############################
 
-
     #init the login manager
     from .model import Patient
 

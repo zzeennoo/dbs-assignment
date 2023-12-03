@@ -95,8 +95,8 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Last Name</th>
                                     <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Phone Number</th>
                                     <th>Address</th>
                                     <th>Date of Birth</th>
@@ -105,6 +105,21 @@
                             </thead>
                             <tbody>
                                 <!-- Populate this section with data -->
+                                {% for patient in patients %}
+                                    <tr>
+                                        <td>{{ patient.code }}</td>
+                                        <td>{{ patient.first_name }}</td>
+                                        <td>{{ patient.last_name }}</td>
+                                        <td>{{ patient.phone_number }}</td>
+                                        <td>{{ patient.address }}</td>
+                                        <td>{{ patient.date_of_birth }}</td>
+                                        <td>{{ patient.gender }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7">No patients found. Error</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -120,7 +135,7 @@
                               </div>
                               <div class="modal-body">
                                   <!-- Form for adding a new patient -->
-                                  <form id="addPatientForm">
+                                  <form id="addPatientForm", action="{{ url_for('actor.add_patient') }}" method="POST">
                                     <div class="form-group">
                                         <label for="lastName">Last Name</label>
                                         <input type="text" class="form-control" id="lastName" name="lastName" required>
@@ -151,6 +166,10 @@
                                             <input type="radio" class="form-check-input" id="female" name="gender" value="Female">
                                             <label class="form-check-label" for="female">Female</label>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="text" class="form-control" id="password" name="password" required>
                                     </div>
                                     <!-- Add more input fields as needed -->
                                 
@@ -217,16 +236,15 @@
             console.log("Tab clicked: " + tab.innerText);
         }
 
-       $(document).ready(function () {
-            // Initialize DataTable with server-side processing
+        $(document).ready(function () {
 
-            // Show the modal when the "Add New Patient" button is clicked
-            $('#addPatientButton').click(function () {
-                $('#addPatientModal').modal('show');
+                // Show the modal when the "Add New Patient" button is clicked
+                $('#addPatientButton').click(function () {
+                    $('#addPatientModal').modal('show');
+                });
+
+                
             });
-
-            
-        });
 
         function editPatient(id) {
             // Implement logic to edit patient information
