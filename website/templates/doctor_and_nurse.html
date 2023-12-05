@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- DataTables JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <style>
+        #sidebar {
+            background-color: #343a40;
+            height: 100vh;
+            padding-top: 20px;
+        }
+
+        #sidebar .nav-link {
+            padding: 10px 20px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        #sidebar .nav-link.active {
+            background-color: #007bff;
+        }
+
+        #addPatientButton {
+            margin-bottom: 20px;
+        }
+
+        #goBackButton {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        #contentContainer {
+            padding-top: 20px; /* Adjust this value as needed */
+        }
+        #searchForm {
+            margin-bottom: 20px; /* Adjust the value as needed */
+        }
+
+        #searchBarName,
+        #searchBarIP,
+        #searchBarOP,
+        #searchButton {
+            margin-bottom: 10px; /* Adjust the value as needed */
+        }
+        #searchButton {
+            margin-top: 10px;
+            margin-bottom: 20px; /* Add margin at the bottom */
+        }
+        /* Add margin to the patient list table */
+        #filteredPatientsDataTable {
+            margin-top: 20px; /* Adjust the value as needed */
+        }
+        #blankPageMessage {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky">
+                    <!-- Go Back Button -->
+                    <button id="goBackButton" type="button" class="btn btn-secondary" onclick="goBack()">
+                        Homepage
+                    </button>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#add_treatment" onclick="changeTab(this)">
+                                Add Treatment for Inpatient
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#add_examine" onclick="changeTab(this)">
+                                Add Examine for Outpatient
+                            </a>
+                        </li>
+                        <!-- Add more sidebar items as needed -->
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="container" id="contentContainer">                
+
+                    <!-- Content for Add Treatment -->
+                    <div id="addTreatmentContent" style="display: none;">
+                        <h2 id="treatmentTable">Treatment List</h2>
+                        <!-- Blank Page Message -->
+                        <div id="blankPageMessage">
+                            <p>This is a blank page for treatment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Content for Add Examine -->
+                    <div id="addExamineContent" style="display: none;">
+                        <h2 id="examineTable">Examine List</h2>
+                        <!-- Blank Page Message -->
+                        <div id="blankPageMessage">
+                            <p>This is a blank page for examine.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+      function changeTab(tab) {
+            // Hide all content sections
+            $('#patientsTableContent').hide();
+            $('#addTreatmentContent').hide();
+            $('#addExamineContent').hide();
+            $('#searchExportContent').hide();
+
+            // Remove 'active' class from all links
+            $('#sidebar .nav-link').removeClass('active');
+
+            // Show the selected content section
+            if (tab.innerText === "Add Treatment for Inpatient") {
+                $('#addTreatmentContent').show();
+            } else if (tab.innerText === "Add Examine for Outpatient") {
+                $('#addExamineContent').show();
+            }
+
+            // Add 'active' class to the clicked link
+            $(tab).addClass('active');
+
+            // Log the clicked tab for demonstration purposes
+            console.log("Tab clicked: " + tab.innerText);
+        }
+
+        $(document).ready(function () {
+
+                // Show the modal when the "Add New Patient" button is clicked
+                $('#addPatientButton').click(function () {
+                    $('#addPatientModal').modal('show');
+                });
+
+                
+            });
+
+        function editPatient(id) {
+            // Implement logic to edit patient information
+            console.log("Edit Patient clicked for ID: " + id);
+        }
+
+        var filteredPatients = [
+            { id: 1, firstName: 'John', lastName: 'Doe', phoneNumber: '123-456-7890', address: '123 Main St', dateOfBirth: '1990-01-01', gender: 'Male' },
+            { id: 2, firstName: 'Jane', lastName: 'Doe', phoneNumber: '987-654-3210', address: '456 Oak St', dateOfBirth: '1992-05-15', gender: 'Female' },
+            // Add more patients as needed
+        ];
+    </script> 
+    
+</body>
+
+</html>

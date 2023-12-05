@@ -85,16 +85,7 @@
                                 Patient List
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#add_treatment" onclick="changeTab(this)">
-                                Add Treatment for Inpatient
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#add_examine" onclick="changeTab(this)">
-                                Add Examine for Outpatient
-                            </a>
-                        </li>
+            
                         <li class="nav-item">
                             <a class="nav-link" href="#search_export" onclick="changeTab(this)">
                                 Search and Export
@@ -204,24 +195,6 @@
                       </div>
                     </div>
 
-                    <!-- Content for Add Treatment -->
-                    <div id="addTreatmentContent" style="display: none;">
-                        <h2 id="treatmentTable">Treatment List</h2>
-                        <!-- Blank Page Message -->
-                        <div id="blankPageMessage">
-                            <p>This is a blank page for treatment.</p>
-                        </div>
-                    </div>
-
-                    <!-- Content for Add Examine -->
-                    <div id="addExamineContent" style="display: none;">
-                        <h2 id="examineTable">Examine List</h2>
-                        <!-- Blank Page Message -->
-                        <div id="blankPageMessage">
-                            <p>This is a blank page for examine.</p>
-                        </div>
-                    </div>
-
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
@@ -299,10 +272,6 @@
             // Show the selected content section
             if (tab.innerText === "Patient List") {
                 $('#patientsTableContent').show();
-            } else if (tab.innerText === "Add Treatment for Inpatient") {
-                $('#addTreatmentContent').show();
-            } else if (tab.innerText === "Add Examine for Outpatient") {
-                $('#addExamineContent').show();
             } else if (tab.innerText === "Search and Export") {
                 $('#searchExportContent').show();
             }
