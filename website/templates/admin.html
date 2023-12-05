@@ -41,7 +41,24 @@
         #contentContainer {
             padding-top: 20px; /* Adjust this value as needed */
         }
+        #searchForm {
+            margin-bottom: 20px; /* Adjust the value as needed */
+        }
 
+        #searchBarName,
+        #searchBarIP,
+        #searchBarOP,
+        #searchButton {
+            margin-bottom: 10px; /* Adjust the value as needed */
+        }
+        #searchButton {
+            margin-top: 10px;
+            margin-bottom: 20px; /* Add margin at the bottom */
+        }
+        /* Add margin to the patient list table */
+        #filteredPatientsDataTable {
+            margin-top: 20px; /* Adjust the value as needed */
+        }
         #blankPageMessage {
             margin-top: 20px;
             font-size: 18px;
@@ -76,6 +93,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#add_examine" onclick="changeTab(this)">
                                 Add Examine for Outpatient
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#search_export" onclick="changeTab(this)">
+                                Search and Export
                             </a>
                         </li>
                         <!-- Add more sidebar items as needed -->
@@ -200,6 +222,59 @@
                         </div>
                     </div>
 
+                    <!-- Content for Search and Export -->
+                    <div id="searchExportContent" style="display: none;">
+                        <h2 id="searchExportTable">Search and Export</h2>
+                        
+                        <!-- Search Bar Section -->
+                        <div>
+                            <label for="searchByName">Search by Name:</label>
+                            <input type="text" id="searchByName" class="form-control">
+                        </div>
+                        
+                        <div>
+                            <label for="searchByIP">Search by IP Code:</label>
+                            <input type="text" id="searchByIP" class="form-control">
+                        </div>
+                        
+                        <div>
+                            <label for="searchByOP">Search by OP Code:</label>
+                            <input type="text" id="searchByOP" class="form-control">
+                        </div>
+
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" onclick="handleSearch()">Search</button>
+                        </div>
+                        <!-- Filtered Patient List Section -->
+                        <div id="filteredPatientsList">
+                            <h3>Filtered Patients</h3>
+                            <table id="filteredPatientsTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Address</th>
+                                        <th>Date of Birth</th>
+                                        <th>Gender</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filtered patients will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Export Option Section -->
+                        <div id="exportOption" style="display: none;">
+                            <p>Export Options:</p>
+                            <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
+                            <!-- Add more export options if needed -->
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -216,6 +291,7 @@
             $('#patientsTableContent').hide();
             $('#addTreatmentContent').hide();
             $('#addExamineContent').hide();
+            $('#searchExportContent').hide();
 
             // Remove 'active' class from all links
             $('#sidebar .nav-link').removeClass('active');
@@ -227,6 +303,8 @@
                 $('#addTreatmentContent').show();
             } else if (tab.innerText === "Add Examine for Outpatient") {
                 $('#addExamineContent').show();
+            } else if (tab.innerText === "Search and Export") {
+                $('#searchExportContent').show();
             }
 
             // Add 'active' class to the clicked link
@@ -249,6 +327,56 @@
         function editPatient(id) {
             // Implement logic to edit patient information
             console.log("Edit Patient clicked for ID: " + id);
+        }
+
+        var filteredPatients = [
+            { id: 1, firstName: 'John', lastName: 'Doe', phoneNumber: '123-456-7890', address: '123 Main St', dateOfBirth: '1990-01-01', gender: 'Male' },
+            { id: 2, firstName: 'Jane', lastName: 'Doe', phoneNumber: '987-654-3210', address: '456 Oak St', dateOfBirth: '1992-05-15', gender: 'Female' },
+            // Add more patients as needed
+        ];
+
+        // Function to populate the filtered patient table
+        function populateFilteredPatients() {
+            var tableBody = $('#filteredPatientsTable tbody');
+            tableBody.empty(); // Clear existing rows
+
+            // Iterate over filteredPatients and add rows to the table
+            filteredPatients.forEach(function (patient) {
+                var row = $('<tr>');
+                row.append('<td>' + patient.id + '</td>');
+                row.append('<td>' + patient.firstName + '</td>');
+                row.append('<td>' + patient.lastName + '</td>');
+                row.append('<td>' + patient.phoneNumber + '</td>');
+                row.append('<td>' + patient.address + '</td>');
+                row.append('<td>' + patient.dateOfBirth + '</td>');
+                row.append('<td>' + patient.gender + '</td>');
+                row.append('<td><button class="btn btn-primary" onclick="exportReport(' + patient.id + ')">Export</button></td>');
+
+                tableBody.append(row);
+            });
+        }
+
+        // Call the function to populate the filtered patient table
+        populateFilteredPatients();
+
+        // Function to handle the export of a specific patient report
+        function exportReport(patientId) {
+            // Implement logic to export the report for the selected patient
+            console.log('Export report for patient ID:', patientId);
+        }
+        function handleSearch() {
+        // Get the values from the search bars
+            var searchByName = $('#searchByName').val();
+            var searchByIP = $('#searchByIP').val();
+            var searchByOP = $('#searchByOP').val();
+
+            // Log the search queries (you can replace this with your search logic)
+            console.log('Search by Name:', searchByName);
+            console.log('Search by IP Code:', searchByIP);
+            console.log('Search by OP Code:', searchByOP);
+
+            // Assuming you have logic to filter the patients based on the search queries
+            // For demonstration purposes, I'm logging the search queries only
         }
     </script> 
     
