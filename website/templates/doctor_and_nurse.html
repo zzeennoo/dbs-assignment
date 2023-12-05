@@ -1,0 +1,418 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <!-- DataTables JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <style>
+            #sidebar {
+                background-color: #343a40;
+                height: 100vh;
+                padding-top: 20px;
+            }
+
+            #sidebar .nav-link {
+                padding: 10px 20px;
+                margin-bottom: 4px;
+                border-radius: 8px;
+                color: #fff;
+            }
+
+            #sidebar .nav-link.active {
+                background-color: #007bff;
+            }
+
+            #addPatientButton {
+                margin-bottom: 20px;
+            }
+
+            #goBackButton {
+                margin-bottom: 20px;
+                width: 100%;
+            }
+
+            #contentContainer {
+                padding-top: 20px; /* Adjust this value as needed */
+            }
+            #searchForm {
+                margin-bottom: 20px; /* Adjust the value as needed */
+            }
+
+            #searchBarName,
+            #searchBarIP,
+            #searchBarOP,
+            #searchButton {
+                margin-bottom: 10px; /* Adjust the value as needed */
+            }
+            #searchButton {
+                margin-top: 10px;
+                margin-bottom: 20px; /* Add margin at the bottom */
+            }
+            /* Add margin to the patient list table */
+            #filteredPatientsDataTable {
+                margin-top: 20px; /* Adjust the value as needed */
+            }
+            #blankPageMessage {
+                margin-top: 20px;
+                font-size: 18px;
+                color: #333;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+
+                <!-- Sidebar -->
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+                    <div class="position-sticky">
+                        <!-- Go Back Button -->
+                        <button id="goBackButton" type="button" class="btn btn-secondary" onclick="goBack()">
+                            Homepage
+                        </button>
+
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#add_treatment" onclick="changeTab(this)">
+                                    Add Treatment for Inpatient
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#add_examine" onclick="changeTab(this)">
+                                    Add Examine for Outpatient
+                                </a>
+                            </li>
+                            <!-- Add more sidebar items as needed -->
+                        </ul>
+                    </div>
+                </nav>
+
+                <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container" id="contentContainer">                
+
+                        <!-- Content for Add Treatment -->
+                        <div id="addTreatmentContent" style="display: none;">
+                            <h2 id="treatmentTable">Treatment List</h2>
+                    
+                            <!-- Table to display recently added patients -->
+                            <table id="recentPatientsTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ICode</th>
+                                        <th>IP Visit</th>
+                                        <th>Admission Date</th>
+                                        <th>Diagnosis</th>
+                                        <th>Sickroom</th>
+                                        <th>Discharge Date</th>
+                                        <th>Fee</th>
+                                        <th>Nurse ID</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentPatientsBody">
+                                    <!-- Populate this section with data using JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Add a modal for entering treatment details -->
+                        <div class="modal" id="acceptTreatmentModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Accept Treatment</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                        
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                        <!-- Form elements for treatment details -->
+                                        <form id="acceptTreatmentForm">
+                                            <div class="mb-3">
+                                                <label for="startDatetime" class="form-label">Start Datetime:</label>
+                                                <input type="datetime-local" class="form-control" id="startDatetime" name="startDatetime" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="endDatetime" class="form-label">End Datetime:</label>
+                                                <input type="datetime-local" class="form-control" id="endDatetime" name="endDatetime" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="mcode" class="form-label">MCode (List of Codes for Medicine):</label>
+                                                <!-- You may use a select element or another input based on your requirements -->
+                                                <input type="text" class="form-control" id="mcode" name="mcode" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="numberOfMed" class="form-label">Number of Med:</label>
+                                                <input type="number" class="form-control" id="numberOfMed" name="numberOfMed" required>
+                                            </div>
+                                        </form>
+                                    </div>
+                        
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="submitTreatment()">Submit Treatment</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content for Add Examine -->
+                        <div id="addExamineContent" style="display: none;">
+                            <h2 id="examineTable">Examine List</h2>
+                        
+                            <!-- Table to display recently added patients for examination -->
+                            <table id="recentExamineTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>OCode</th>
+                                        <th>OVisit</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentExamineBody">
+                                    <!-- Populate this section with data using JavaScript -->
+                                </tbody>
+                            </table>
+                        
+                            <!-- Blank Page Message -->
+                        </div>
+                        
+                        <!-- Add a modal for entering examination details -->
+                        <div class="modal" id="acceptExamineModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Accept Examine</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                        
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                        <!-- Form elements for examination details -->
+                                        <form id="acceptExamineForm">
+                                            <div class="mb-3">
+                                                <label for="mcodeExamine" class="form-label">MCode (List of Codes for Medicine):</label>
+                                                <input type="text" class="form-control" id="mcodeExamine" name="mcodeExamine" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="examDatetime" class="form-label">Exam Datetime:</label>
+                                                <input type="datetime-local" class="form-control" id="examDatetime" name="examDatetime" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="doctorID" class="form-label">Doctor ID:</label>
+                                                <input type="text" class="form-control" id="doctorID" name="doctorID" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="numberOfMedExamine" class="form-label">Number of Med:</label>
+                                                <input type="number" class="form-control" id="numberOfMedExamine" name="numberOfMedExamine" required>
+                                            </div>
+                                        </form>
+                                    </div>
+                        
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="submitExamine()">Submit Examine</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        
+        <script>
+            $(document).ready(function () {
+                $('#addTreatmentContent').show();
+                $('#addTreatmentTab').addClass('active');
+            });
+            function changeTab(tab) {
+                // Hide all content sections
+                $('#addTreatmentContent').hide();
+                $('#addExamineContent').hide();
+
+                // Remove 'active' class from all links
+                $('#sidebar .nav-link').removeClass('active');
+
+                // Show the selected content section
+                if (tab.innerText === "Add Treatment for Inpatient") {
+                    $('#addTreatmentContent').show();
+                } else if (tab.innerText === "Add Examine for Outpatient") {
+                    $('#addExamineContent').show();
+                }
+
+                // Add 'active' class to the clicked link
+                $(tab).addClass('active');
+
+                // Log the clicked tab for demonstration purposes
+                console.log("Tab clicked: " + tab.innerText);
+            }
+
+            var recentPatients = [
+                { ICode: '001', IPVisit: 1, AdmissionDate: '2023-01-01', Diagnosis: 'Sample Diagnosis', Sickroom: '101', DischargeDate: '2023-01-10', Fee: 1000, NurseID: 'N001' },
+                // Add more patients as needed
+            ];
+
+            // Function to populate the table with recent patient data
+            function populateRecentPatientsTable() {
+                var tableBody = document.getElementById('recentPatientsBody');
+                tableBody.innerHTML = '';
+
+                recentPatients.forEach(function (patient) {
+                    var row = tableBody.insertRow();
+                    var cell;
+
+                    // Add cells with patient data
+                    cell = row.insertCell();
+                    cell.textContent = patient.ICode;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.IPVisit;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.AdmissionDate;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.Diagnosis;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.Sickroom;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.DischargeDate;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.Fee;
+
+                    cell = row.insertCell();
+                    cell.textContent = patient.NurseID;
+
+                    // Add Accept Treatment button with onclick event
+                    cell = row.insertCell();
+                    var acceptButton = document.createElement('button');
+                    acceptButton.textContent = 'Accept Treatment';
+                    acceptButton.className = 'btn btn-primary';
+                    acceptButton.onclick = function () {
+                        showAcceptTreatmentModal(patient.ICode); // Pass patient ICode to identify the patient
+                    };
+                    cell.appendChild(acceptButton);
+                });
+            }
+
+            // Function to show the Accept Treatment modal
+            function showAcceptTreatmentModal(patientICode) {
+                // Additional logic to handle the modal display and capture patient ICode
+                console.log('Accept Treatment clicked for patient ICode: ' + patientICode);
+
+                // Show the modal (you may need to adjust this based on your modal library)
+                $('#acceptTreatmentModal').modal('show');
+            }
+
+            // Function to submit the treatment details
+            function submitTreatment() {
+                // Retrieve values from modal form elements (start datetime, end datetime, mcode, number of med)
+                var startDatetime = document.getElementById('startDatetime').value;
+                var endDatetime = document.getElementById('endDatetime').value;
+                var mcode = document.getElementById('mcode').value;
+                var numberOfMed = document.getElementById('numberOfMed').value;
+
+                // Additional logic to handle the submission of treatment details
+                console.log('Start Datetime: ' + startDatetime);
+                console.log('End Datetime: ' + endDatetime);
+                console.log('MCode: ' + mcode);
+                console.log('Number of Med: ' + numberOfMed);
+
+                // Perform further processing or submission logic
+
+                // Close the modal
+                $('#acceptTreatmentModal').modal('hide');
+            }
+
+            var recentExamine = [
+                { OCode: 'E001', OVisit: 3 },
+                // Add more examinations as needed
+            ];
+
+            // Function to populate the table with recent examination data
+            function populateRecentExamineTable() {
+                var tableBody = document.getElementById('recentExamineBody');
+                tableBody.innerHTML = '';
+
+                recentExamine.forEach(function (examine) {
+                    var row = tableBody.insertRow();
+                    var cell;
+
+                    // Add cells with examination data
+                    cell = row.insertCell();
+                    cell.textContent = examine.OCode;
+
+                    cell = row.insertCell();
+                    cell.textContent = examine.OVisit;
+
+                    // Add Accept Examine button with onclick event
+                    cell = row.insertCell();
+                    var acceptButton = document.createElement('button');
+                    acceptButton.textContent = 'Accept Examine';
+                    acceptButton.className = 'btn btn-primary';
+                    acceptButton.onclick = function () {
+                        showAcceptExamineModal(examine.OCode); // Pass examination OCode to identify the examination
+                    };
+                    cell.appendChild(acceptButton);
+                });
+            }
+
+            // Function to show the Accept Examine modal
+            function showAcceptExamineModal(examineOCode) {
+                // Additional logic to handle the modal display and capture examination OCode
+                console.log('Accept Examine clicked for examination OCode: ' + examineOCode);
+
+                // Show the modal (you may need to adjust this based on your modal library)
+                $('#acceptExamineModal').modal('show');
+            }
+
+            // Function to submit the examination details
+            function submitExamine() {
+                // Retrieve values from modal form elements (mcode, exam datetime, doctor id, number of med)
+                var mcodeExamine = document.getElementById('mcodeExamine').value;
+                var examDatetime = document.getElementById('examDatetime').value;
+                var doctorID = document.getElementById('doctorID').value;
+                var numberOfMedExamine = document.getElementById('numberOfMedExamine').value;
+
+                // Additional logic to handle the submission of examination details
+                console.log('MCode: ' + mcodeExamine);
+                console.log('Exam Datetime: ' + examDatetime);
+                console.log('Doctor ID: ' + doctorID);
+                console.log('Number of Med: ' + numberOfMedExamine);
+
+                // Perform further processing or submission logic
+
+                // Close the modal
+                $('#acceptExamineModal').modal('hide');
+            }
+
+            // Call the function to populate the recent patients table
+            populateRecentPatientsTable();
+            populateRecentExamineTable();
+        </script> 
+        
+    </body>
+
+    </html>
