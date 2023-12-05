@@ -51,8 +51,23 @@ def add_patient():
         IPCode="IP" + next_code  
     )
 
+
+    # Print new patient data
+    print("New Patient Data:")
+    print(f"Code: {new_patient.code}")
+    print(f"OPCode: {new_patient.OPCode}")
+    print(f"IPCode: {new_patient.IPCode}")
+    print(f"Password: {new_patient.password}")  # Be cautious with printing passwords
+    print(f"Phone Number: {new_patient.phone_number}")
+    print(f"Address: {new_patient.address}")
+    print(f"Date of Birth: {new_patient.date_of_birth}")
+    print(f"Gender: {new_patient.gender}")
+    print(f"First Name: {new_patient.first_name}")
+    print(f"Last Name: {new_patient.last_name}")
+
     # Add to the database session and commit
     db.session.add(new_patient)
+
     try:
         db.session.commit()
         flash('New patient added successfully!', 'success')
