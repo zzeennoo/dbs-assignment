@@ -1,14 +1,14 @@
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from .model import Patient
+from .model import Patient, Employee, Doctor, Nurse, PhoneNumber
 from . import db
 
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
+@auth.route('/patient-login', methods=['GET', 'POST'])
+def patient_login():
     if request.method == 'POST':
         phone_number = request.form.get('phone_number')
         password = request.form.get('password')
@@ -20,18 +20,51 @@ def login():
                 login_user(patient, remember=True)
                 return redirect(url_for('actor.patient'))
             else:
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('auth.patient_login'))
         else:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.patient_login'))
 
-    return render_template("login.html")
+    return render_template("loginPatient.html")
 
-@auth.route('/logout')
-def logout():
-    return render_template("login.html")
+@auth.route('/doctor-login', methods=['GET', 'POST'])
+def doctor_login():
+    if request.method == 'POST':
+        phone_number = request.form.get('phone_number')
+        password = request.form.get('password')
+        
+        doctor = Doctor.query.join(Employee, Doctor.DoctorID == Employee.EmployeeID)\
+                             .join(PhoneNumber, Employee.EmployeeID == PhoneNumber.EmployeeID)\
+                             .filter(PhoneNumber.Phone_no == phone_number).first()
 
-@auth.route('/sign-up')
-def sign_up():
+        if doctor:
+            if doctor.employee.Password == password:
+                login_user(doctor.employee, remember=True)
+                return redirect(url_for('actor.doctor'))
+            else:
+                return redirect(url_for('auth.doctor_login'))
+        else:
+            return redirect(url_for('auth.doctor_login'))
 
-    return render_template("sign_up.html")
+    return render_template("loginDoctor.html")
+
+@auth.route('/nurse-login', methods=['GET', 'POST'])
+def nurse_login():
+    if request.method == 'POST':
+        phone_number = request.form.get('phone_number')
+        password = request.form.get('password')
+
+        nurse = Nurse.query.join(Employee, Nurse.NurseID == Employee.EmployeeID)\
+                           .join(PhoneNumber, Employee.EmployeeID == PhoneNumber.EmployeeID)\
+                           .filter(PhoneNumber.Phone_no == phone_number).first()
+
+        if nurse:
+            if nurse.employee.Password == password:
+                login_user(nurse.employee, remember=True)
+                return redirect(url_for('actor.nurse'))
+            else:
+                return redirect(url_for('auth.nurse_login'))
+        else:
+            return redirect(url_for('auth.nurse_login'))
+
+    return render_template("loginNurse.html")
 

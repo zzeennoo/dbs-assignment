@@ -121,13 +121,13 @@
                                 <!-- Populate this section with data -->
                                 {% for patient in patients %}
                                     <tr>
-                                        <td>{{ patient.code }}</td>
-                                        <td>{{ patient.first_name }}</td>
-                                        <td>{{ patient.last_name }}</td>
-                                        <td>{{ patient.phone_number }}</td>
-                                        <td>{{ patient.address }}</td>
-                                        <td>{{ patient.date_of_birth }}</td>
-                                        <td>{{ patient.gender }}</td>
+                                        <td>{{ patient.Code }}</td>
+                                        <td>{{ patient.First_Name }}</td>
+                                        <td>{{ patient.Last_Name }}</td>
+                                        <td>{{ patient.Phone_number }}</td>
+                                        <td>{{ patient.Address }}</td>
+                                        <td>{{ patient.Date_of_Birth }}</td>
+                                        <td>{{ patient.Gender }}</td>
                                     </tr>
                                 {% else %}
                                     <tr>
@@ -209,19 +209,15 @@
                         
                         <!-- Search Bar Section -->
                         <div>
-                            <label for="searchByName">Search by Name:</label>
-                            <input type="text" id="searchByName" class="form-control">
+                            <label for="searchByName">Doctor's Name:</label>
+                            <input type="text" id="input_name" class="form-control">
                         </div>
                         
                         <div>
-                            <label for="searchByIP">Search by IP Code:</label>
-                            <input type="text" id="searchByIP" class="form-control">
+                            <label for="searchByIP">Doctor's ID:</label>
+                            <input type="text" id="input_id" class="form-control">
                         </div>
                         
-                        <div>
-                            <label for="searchByOP">Search by OP Code:</label>
-                            <input type="text" id="searchByOP" class="form-control">
-                        </div>
 
                         <div class="col-md-12">
                             <button class="btn btn-primary" onclick="handleSearch()">Search</button>

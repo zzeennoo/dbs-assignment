@@ -10,8 +10,7 @@ actor = Blueprint('actor', __name__)
 def patient():
     return render_template('patient.html')
 
-
-
+@login_required
 @actor.route('/admin')
 def admin():
     # Query all patients from the database
@@ -30,40 +29,24 @@ def add_patient():
     password = request.form.get('password')
 
     #Generate new Code(ID) for patient
-    last_patient = Patient.query.order_by(Patient.code.desc()).first()
+    last_patient = Patient.query.order_by(Patient.Code.desc()).first()
     if last_patient:
-        next_code = str(int(last_patient.code) + 1).zfill(9)  # Assuming ID is a numeric string
+        next_code = str(int(last_patient.Code) + 1).zfill(9)  # Assuming ID is a numeric string
     else:
         next_code = '000000001'
-
-    
+ 
     # Create new Patient object
     new_patient = Patient(
-        code = next_code,
-        password = password,
-        last_name=last_name,
-        first_name=first_name,
-        phone_number=phone_number,
-        address=address,
-        date_of_birth=date_of_birth,
-        gender=gender,
-        OPCode="OP" + next_code,  
-        IPCode="IP" + next_code  
+        Code = next_code,
+        Password = password,
+        Last_Name =last_name,
+        First_Name =first_name,
+        Phone_number =phone_number,
+        Address =address,
+        Date_of_Birth=date_of_birth,
+        Gender=gender
     )
 
-
-    # Print new patient data
-    print("New Patient Data:")
-    print(f"Code: {new_patient.code}")
-    print(f"OPCode: {new_patient.OPCode}")
-    print(f"IPCode: {new_patient.IPCode}")
-    print(f"Password: {new_patient.password}")  # Be cautious with printing passwords
-    print(f"Phone Number: {new_patient.phone_number}")
-    print(f"Address: {new_patient.address}")
-    print(f"Date of Birth: {new_patient.date_of_birth}")
-    print(f"Gender: {new_patient.gender}")
-    print(f"First Name: {new_patient.first_name}")
-    print(f"Last Name: {new_patient.last_name}")
 
     # Add to the database session and commit
     db.session.add(new_patient)
