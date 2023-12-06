@@ -34,3 +34,4 @@ def logout():
 def sign_up():
 
     return render_template("sign_up.html")
+

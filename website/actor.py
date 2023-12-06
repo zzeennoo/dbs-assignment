@@ -84,6 +84,10 @@ def add_patient():
 
 
 
-@actor.route('/doctor_and_nurse')
-def doctor_and_nurse():
-    return render_template('doctor_and_nurse.html')
+@actor.route('/doctor')
+def doctor():
+    return render_template("doctor.html")
+
+@actor.route('/nurse')
+def nurse():
+    return render_template("nurse.html")
