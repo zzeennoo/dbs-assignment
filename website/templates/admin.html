@@ -252,13 +252,6 @@
                                             <input type="radio" class="form-check-input" id="female" name="gender" value="F">
                                             <label class="form-check-label" for="female">Female</label>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="patientType">Patient Type</label>
-                                            <select class="form-control" id="patientType" name="patientType" required>
-                                                <option value="inpatient">Inpatient</option>
-                                                <option value="outpatient">Outpatient</option>
-                                            </select>
-                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="password">Password</label>
@@ -460,13 +453,12 @@
                             <table id="treatmentPatientsTable" class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Phone Number</th>
+                                        <th>IP_Visit</th>
+                                        <th>Name</th>
+                                        <th>Diagnosis</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
-                                        <th>Action</th>
+                                        <th>Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -480,13 +472,12 @@
                             <table id="examinePatientsTable" class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
+                                        <th>OP_Visit</th>
+                                        <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Exam Date</th>
                                         <th>Diagnosis</th>
-                                        <th>Action</th>
+                                        <th>Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -918,10 +909,9 @@
                             if (patient.treatment_type === "Inpatient") {
                                 // Treatment patients
                                 var treatmentRow = $('<tr>').append(
-                                    $('<td>').text(patient.id),
-                                    $('<td>').text(patient.first_name),
-                                    $('<td>').text(patient.last_name),
-                                    $('<td>').text(patient.phone_number),
+                                    $('<td>').text(patient.treatment_detail.IP_visit),
+                                    $('<td>').text(patient.first_name + ' ' + patient.last_name),
+                                    $('<td>').text(patient.treatment_detail.Diagnosis),
                                     $('<td>').text(patient.treatment_detail.Treatment.Start_datetime),
                                     $('<td>').text(patient.treatment_detail.Treatment.End_datetime),
                                     $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
@@ -930,9 +920,8 @@
                             } else if (patient.treatment_type === "Outpatient") {
                                 // Examine patients
                                 var examineRow = $('<tr>').append(
-                                    $('<td>').text(patient.id),
-                                    $('<td>').text(patient.first_name),
-                                    $('<td>').text(patient.last_name),
+                                    $('<td>').text(patient.treatment_detail.OP_visit),
+                                    $('<td>').text(patient.first_name + ' ' + patient.last_name),
                                     $('<td>').text(patient.phone_number),
                                     $('<td>').text(patient.treatment_detail.Examination.Exam_datetime),
                                     $('<td>').text(patient.treatment_detail.Examination.Diagnosis),

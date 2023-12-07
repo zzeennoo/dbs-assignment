@@ -106,34 +106,33 @@ def search_by_doctor():
 @actor.route('/search_by_patient', methods=['GET'])
 def search_by_patient():
     input_id = request.args.get('input_id')
+  
+    inpatient_query = db.session.query(
+            Patient, IpDetail, TreatAttribute
+        ).join(
+            Inpatient, Patient.Code == Inpatient.ICode
+        ).join(
+            IpDetail, Inpatient.ICode == IpDetail.ICode
+        ).join(
+            TreatAttribute, and_(
+                IpDetail.ICode == TreatAttribute.ICode,
+                IpDetail.IP_visit == TreatAttribute.IP_visit
+            )
+        ).filter(Patient.Code == input_id)
 
-    # Aliases for inpatient-related tables
-    inpatient_alias = aliased(Inpatient)
-    ip_detail_alias = aliased(IpDetail)
-    treat_attribute_alias = aliased(TreatAttribute)
+    outpatient_query = db.session.query(
+            Patient, OpDetail, ExamineDetail
+        ).join(
+            Outpatient, Outpatient.OCode == Patient.Code  
+        ).join(
+            OpDetail, OpDetail.OCode == Outpatient.OCode  
+        ).join(
+            ExamineDetail, and_(
+                ExamineDetail.OCode == OpDetail.OCode, 
+                ExamineDetail.OP_visit == OpDetail.OP_visit 
+            )
+        ).filter(Patient.Code == input_id)
 
-    # Query for inpatient details including patient information
-    inpatient_query = db.session.query(Patient, IpDetail, TreatAttribute)\
-                    .join(inpatient_alias, Patient.inpatients)\
-                    .join(ip_detail_alias, inpatient_alias.ip_details)\
-                    .join(treat_attribute_alias, and_(
-                        ip_detail_alias.ICode == treat_attribute_alias.ICode, 
-                        ip_detail_alias.IP_visit == treat_attribute_alias.IP_visit))\
-                    .filter(Patient.Code == input_id)
-
-    # Aliases for outpatient-related tables
-    outpatient_alias = aliased(Outpatient)
-    op_detail_alias = aliased(OpDetail)
-    examine_detail_alias = aliased(ExamineDetail)
-
-    # Query for outpatient details including patient information
-    outpatient_query = db.session.query(Patient, OpDetail, ExamineDetail)\
-                    .join(outpatient_alias, Patient.outpatients)\
-                    .join(op_detail_alias, outpatient_alias.op_details)\
-                    .join(examine_detail_alias, and_(
-                        op_detail_alias.OCode == examine_detail_alias.OCode, 
-                        op_detail_alias.OP_visit == examine_detail_alias.OP_visit))\
-                    .filter(Patient.Code == input_id)
 
     # Execute the queries
     inpatient_details = inpatient_query.all()
@@ -155,6 +154,11 @@ def search_by_patient():
             "treatment_detail": {
                 "IP_visit": ip_detail.IP_visit,
                 "Diagnosis": ip_detail.Diagnosis,
+                "Admission_date": ip_detail.Admission_date,
+                "Sickroom": ip_detail.Sickroom,
+                "Discharge_date": ip_detail.Discharge_date,
+                "Nurse_ID": ip_detail.Nurse_ID,
+                "Fee": ip_detail.Fee,
                 "Treatment": {
                     "DoctorID": treat_attr.DoctorID,
                     "Start_datetime": treat_attr.Start_datetime,
