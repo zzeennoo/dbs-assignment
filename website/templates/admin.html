@@ -140,16 +140,19 @@
                     <button id="goBackButton" type="button" class="btn btn-secondary" onclick="logout()">
                         Logout
                     </button>
-
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link active" href="#patient_list" onclick="changeTab(this)">
                                 Patient List
                             </a>
                         </li>
-            
                         <li class="nav-item">
-                            <a class="nav-link" href="#search_export" onclick="changeTab(this)">
+                            <a class="nav-link" href="#search_by_doctor" onclick="changeTab(this)">
+                                Search by Doctor
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#search_and_export" onclick="changeTab(this)">
                                 Search and Export
                             </a>
                         </li>
@@ -399,6 +402,119 @@
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
+                        <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
+                        <!-- Search Bar Section -->
+                        <div>
+                            <label for="searchByName">PatientID</label>
+                            <input type="text" id="input_name" class="form-control">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <button id="searchButton" class="btn btn-primary">Search</button>
+                        </div>
+                        <!-- Filtered Patient List Section -->
+                        <div id="filteredPatientsList">
+                            <h3>Filtered Patients</h3>
+                            <table id="filteredPatientsTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filtered patients will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="exportOption" style="display: none;">
+                            <p>Export Options:</p>
+                            <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
+                            <!-- Add more export options if needed -->
+                        </div>
+                    </div>
+
+                    <!-- Report modal-->
+                    <div class="modal" id="patientInfoModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Patient Information</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="patientID" class="form-label">Patient ID:</label>
+                                        <input type="text" class="form-control" id="patientID" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="firstName" class="form-label">First Name:</label>
+                                        <input type="text" class="form-control" id="firstName" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="lastName" class="form-label">Last Name:</label>
+                                        <input type="text" class="form-control" id="lastName" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="visitCode" class="form-label">Visit Code:</label>
+                                        <input type="text" class="form-control" id="visitCode" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phoneNumber" class="form-label">Phone Number:</label>
+                                        <input type="text" class="form-control" id="phoneNumber" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Address:</label>
+                                        <input type="text" class="form-control" id="address" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="dateOfBirth" class="form-label">Date of Birth:</label>
+                                        <input type="text" class="form-control" id="dateOfBirth" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender:</label>
+                                        <input type="text" class="form-control" id="gender" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startTreatment" class="form-label">Start Treatment:</label>
+                                        <input type="text" class="form-control" id="startTreatment" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endTreatment" class="form-label">End Treatment:</label>
+                                        <input type="text" class="form-control" id="endTreatment" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="doctorID" class="form-label">Doctor ID:</label>
+                                        <input type="text" class="form-control" id="doctorID" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="medicineList" class="form-label">Medicine List:</label>
+                                        <textarea class="form-control" id="medicineList" readonly></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="totalPrice" class="form-label">Total Price:</label>
+                                        <input type="text" class="form-control" id="totalPrice" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="searchByDoctorContent" style="display: node;">
+                        <h2 id="searchByDoctorTable">Search by Doctor</h2>
                         
                         <!-- Search Bar Section -->
                         <div>
@@ -407,7 +523,7 @@
                         </div>
                         
                         <div>
-                            <label for="searchByIP">Doctor's ID:</label>
+                            <label for="searchByDoctorID">Doctor's ID:</label>
                             <input type="text" id="input_id" class="form-control">
                         </div>
                         
@@ -484,6 +600,7 @@
             $('#addTreatmentContent').hide();
             $('#addExamineContent').hide();
             $('#searchExportContent').hide();
+            $('#searchByDoctorContent').hide();
 
             // Remove 'active' class from all links
             $('#sidebar .nav-link').removeClass('active');
@@ -493,6 +610,8 @@
                 $('#patientsTableContent').show();
             } else if (tab.innerText === "Search and Export") {
                 $('#searchExportContent').show();
+            } else if (tab.innerText === "Search by Doctor") {
+                $('#searchByDoctorContent').show()
             }
 
             // Add 'active' class to the clicked link
@@ -704,6 +823,44 @@
 
             // Close the modal
             $('#acceptTreatmentModal').modal('hide');
+        }
+
+         // Function to handle export button click
+        function exportReport() {
+            // Dummy values for patient information (replace with actual values from backend)
+            const patientInfo = {
+                patientID: "P001",
+                firstName: "John",
+                lastName: "Doe",
+                visitCode: "V001",
+                phoneNumber: "123-456-7890",
+                address: "123 Main St",
+                dateOfBirth: "1990-01-01",
+                gender: "Male",
+                startTreatment: "2023-01-01 08:00 AM",
+                endTreatment: "2023-01-10 05:00 PM",
+                doctorID: "D001",
+                medicineList: "Medicine A, Medicine B, Medicine C",
+                totalPrice: "$500"
+            };
+
+            // Populate the patient information modal with dummy values
+            document.getElementById('patientID').value = patientInfo.patientID;
+            document.getElementById('firstName').value = patientInfo.firstName;
+            document.getElementById('lastName').value = patientInfo.lastName;
+            document.getElementById('visitCode').value = patientInfo.visitCode;
+            document.getElementById('phoneNumber').value = patientInfo.phoneNumber;
+            document.getElementById('address').value = patientInfo.address;
+            document.getElementById('dateOfBirth').value = patientInfo.dateOfBirth;
+            document.getElementById('gender').value = patientInfo.gender;
+            document.getElementById('startTreatment').value = patientInfo.startTreatment;
+            document.getElementById('endTreatment').value = patientInfo.endTreatment;
+            document.getElementById('doctorID').value = patientInfo.doctorID;
+            document.getElementById('medicineList').value = patientInfo.medicineList;
+            document.getElementById('totalPrice').value = patientInfo.totalPrice;
+
+            // Show the patient information modal
+            $('#patientInfoModal').modal('show');
         }
             
 
