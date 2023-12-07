@@ -437,7 +437,7 @@
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
-                        <button class="btn btn-primary" onclick="exportPayment()">Test button</button>
+                        
                         <!-- Search Bar Section -->
                         <div>
                             <label for="searchByName">PatientID</label>
@@ -592,6 +592,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <!--Examine info modal-->
                     <div class="modal wide-modal" id="patientTreatmentodal">
                         <div class="modal-dialog modal-dialog-centered">
@@ -914,7 +916,9 @@
                                     $('<td>').text(patient.treatment_detail.Diagnosis),
                                     $('<td>').text(patient.treatment_detail.Treatment.Start_datetime),
                                     $('<td>').text(patient.treatment_detail.Treatment.End_datetime),
-                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                        $('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientReport(\'' + patient + '\')">View Detail</button>'),
+                                    $('<td>').html('<button class="btn btn-primary" onclick="exportInpatientReport(\'' + patient + '\')">Export Payment</button>')
+
                                 );
                                 $('#treatmentPatientsTable tbody').append(treatmentRow);
                             } else if (patient.treatment_type === "Outpatient") {
@@ -925,7 +929,8 @@
                                     $('<td>').text(patient.phone_number),
                                     $('<td>').text(patient.treatment_detail.Examination.Exam_datetime),
                                     $('<td>').text(patient.treatment_detail.Examination.Diagnosis),
-                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                    $('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientReport(\'' + patient + '\')">View Detail</button>'),
+                                        $('<td>').html('<button class="btn btn-primary" onclick="exportInpatientReport(\'' + patient + '\')">Export Payment</button>')
                                 );
                                 $('#examinePatientsTable tbody').append(examineRow);
                             }
@@ -936,11 +941,47 @@
                         console.log('Error fetching patient list:', textStatus, errorThrown);
                     }
                 });
-                
 
             });
         });
         
+        function exportInpatientReport(patientId, ipVisit) {
+            $.ajax({
+                url: '/get_patient_report',
+                data: {'patient_id': patientId, 'ip_visit': ipVisit},
+                type: 'GET',
+                success: function(response) {
+                     // Assuming data is the JSON response from the Flask route
+                        $('#firstName').val(data.patient_name.split(' ')[0]);
+                        $('#lastName').val(data.patient_name.split(' ')[1]);
+                        $('#patientID').val(data.patient_id);
+                        // ... Set other patient details ...
+                        
+                        // Set treatment and doctor details
+                        $('#startTreatment').val(data.treatment_start);
+                        $('#endTreatment').val(data.treatment_end);
+                        $('#doctorID').val(data.doctor_id);
+                        $('#visitCode').val(ipVisit);
+
+                        // Set medicine list
+                        let medicineText = data.medicine_list.map(med => 
+                            `${med.code} - ${med.name} - $${med.price} x ${med.amount} = $${med.total_cost}`
+                        ).join('\n');
+                        $('#medicineList').val(medicineText);
+
+                        // Set total price
+                        $('#totalPrice').val(`$${data.total_price}`);
+
+                        // Show the modal
+                        $('#patientTreatmentModal').modal('show');
+                    $('#reportModal').modal('show');
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('Error fetching report data');
+                }
+            });
+        }
 
         // Function to handle the export of a specific patient report
         function exportReport(patientId) {
@@ -1081,9 +1122,9 @@
         function exportPayment() {
             // Dummy values for payment information (replace with actual values from backend)
             const paymentInfo = {
-                patientName: "John Doe",
-                patientID: "P001",
-                phoneNumber: "123-456-7890",
+                patientName: "Tien Nguyen Van",
+                patientID: "000000001",
+                phoneNumber: "0837414012",
                 admissionDate: "2023-01-01",
                 billingDate: "2023-01-15",
                 treatmentFee: "$200",
