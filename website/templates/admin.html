@@ -138,6 +138,7 @@
                         </table>
                     </div>
 
+                    <!-- Modal to add patient-->
                     <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -247,6 +248,32 @@
     
                     </div>
 
+                    <!-- Modal dislay patient infor-->
+                    <div class="modal fade" id="patientInfoModal" tabindex="-1" role="dialog" aria-labelledby="patientInfoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="patientInfoModalLabel">Patient Information</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Dynamic patient details will be loaded here -->
+                                    <div id="patientDetails"></div>
+                                    <hr>
+                                    <h6>Treatments</h6>
+                                    <div id="patientTreatments"></div>
+                                    <hr>
+                                    <h6>Examinations</h6>
+                                    <div id="patientExaminations"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
@@ -258,7 +285,7 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
     <script>
-      function changeTab(tab) {
+        function changeTab(tab) {
             // Hide all content sections
             $('#patientsTableContent').hide();
             $('#addTreatmentContent').hide();
@@ -297,6 +324,7 @@
             console.log("Edit Patient clicked for ID: " + id);
         }
 
+        //This is for search by doctor
         $(document).ready(function() {
             $('#searchButton').click(function() {
                 var doctorName = $('#input_name').val();
@@ -329,7 +357,8 @@
                                 $('<td>').text(patient.address),
                                 $('<td>').text(patient.date_of_birth),
                                 $('<td>').text(patient.gender),
-                                $('<td>').html('class="btn btn-primary" onclick="exportReport()">Export Report</button>')
+                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+
 
                             );
                             // Append the row to the table body
@@ -349,8 +378,45 @@
 
         // Function to handle the export of a specific patient report
         function exportReport(patientId) {
-            // Implement logic to export the report for the selected patient
-            console.log('Export report for patient ID:', patientId);
+        // Fetch the patient data
+        $.ajax({
+            url: '/export_patient_details',  // Replace with the actual URL to your Flask route
+            type: 'GET',
+            data: { patient_id: patientId },
+            dataType: 'json',
+            success: function(response) {
+            // Populate the patient details
+            var details = response.patient;
+            $('#patientDetails').html(
+                '<p><strong>ID:</strong> ' + details.id + '</p>' +
+                '<p><strong>Name:</strong> ' + details.first_name + ' ' + details.last_name + '</p>' +
+                '<p><strong>Phone Number:</strong> ' + details.phone_number + '</p>' +
+                '<p><strong>Address:</strong> ' + details.address + '</p>' +
+                '<p><strong>Date of Birth:</strong> ' + details.date_of_birth + '</p>' +
+                '<p><strong>Gender:</strong> ' + details.gender + '</p>'
+            );
+
+            // Populate the treatments
+            var treatments = response.treatments; // Assuming this is an array
+            $('#patientTreatments').empty();
+            treatments.forEach(function(treatment) {
+                $('#patientTreatments').append('<p>' + treatment.description + '</p>'); // Replace with actual treatment fields
+            });
+
+            // Populate the examinations
+            var examinations = response.examinations; // Assuming this is an array
+            $('#patientExaminations').empty();
+            examinations.forEach(function(examination) {
+                $('#patientExaminations').append('<p>' + examination.description + '</p>'); // Replace with actual examination fields
+            });
+
+            // Show the modal
+            $('#patientInfoModal').modal('show');
+            },
+            error: function(error) {
+            console.error('Error fetching patient data:', error);
+            }
+        });
         }
 
         function logout() {

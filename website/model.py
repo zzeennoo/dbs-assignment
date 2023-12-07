@@ -125,3 +125,19 @@ class UseFor(db.Model):
     DoctorID = db.Column(db.CHAR(9), primary_key=True)
     Exam_datetime = db.Column(db.DateTime, primary_key=True)
     NumOfMed = db.Column(db.Integer, nullable=False)
+
+class Medication(db.Model):
+    __tablename__ = 'medication'
+    Code = db.Column(db.CHAR(9), primary_key=True)
+    Name = db.Column(db.String(45), nullable=False)
+    Price = db.Column(db.Integer, nullable=False)
+    Expired_Date = db.Column(db.Date, nullable=False)
+
+    # Relationship with Effects
+    effects = db.relationship('Effects', backref='medication', lazy=True)
+
+
+class Effects(db.Model):
+    __tablename__ = 'effects'
+    Code = db.Column(db.CHAR(9), db.ForeignKey('medication.Code'), primary_key=True)
+    Effects = db.Column(db.String(45), primary_key=True)
