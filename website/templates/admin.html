@@ -162,8 +162,6 @@
                 </div>
             </nav>
             
-
-
             <!-- Content here -->
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container" id="contentContainer">
@@ -172,13 +170,6 @@
                         <h2 id="patientsTable">Patient List</h2>
                         <!-- Add Patient Button -->
                         <button id="addPatientButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
-                    
-                        <!-- Search Bar -->
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="input_name_or_phone" placeholder="Search by Name or Phone Number">
-                        </div>
-
-                        <button class="btn btn-primary" type="button" id="search_by_patient_button">Search</button>
                     
                         <table id="patientsDataTable" class="table">
                             <thead>
@@ -399,6 +390,57 @@
                             </div>
                         </div>
                     </div>
+                    <!-- end tab 1-->
+
+                    <!--Search by doctor-->
+                    <div id="searchByDoctorContent" style="display: none;">
+                        <h2 id="searchByDoctorTable">Search by Doctor</h2>
+                        
+                        <!-- Search Bar Section -->
+                        <div>
+                            <label for="searchByName">Doctor's Name:</label>
+                            <input type="text" id="input_name" class="form-control">
+                        </div>
+                        
+                        <div>
+                            <label for="searchByDoctorID">Doctor's ID:</label>
+                            <input type="text" id="input_id" class="form-control">
+                        </div>
+                        
+
+                        <div class="col-md-12">
+                            <button id="search_by_doctor_button" class="btn btn-primary" type="button" >Search</button>
+                        </div>
+
+                        <!-- Filtered Patient List Section -->
+                        <div id="filteredPatientsList">
+                            <h3>Filtered Patients</h3>
+                            <table id="search_by_doctor_table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Address</th>
+                                        <th>Date of Birth</th>
+                                        <th>Gender</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filtered patients will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+    
+                    </div>
+                    
+
+
+                    <!--end tab 2-->
+
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
@@ -406,16 +448,16 @@
                         <!-- Search Bar Section -->
                         <div>
                             <label for="searchByName">PatientID</label>
-                            <input type="text" id="input_name" class="form-control">
+                            <input type="text" id="input_patientid" class="form-control">
                         </div>
                         
                         <div class="col-md-12">
-                            <button id="searchButton" class="btn btn-primary">Search</button>
+                            <button id="search_by_patient_button" class="btn btn-primary">Search</button>
                         </div>
-                        <!-- Filtered Patient List Section -->
+
                         <div id="filteredPatientsList">
-                            <h3>Filtered Patients</h3>
-                            <table id="filteredPatientsTable" class="table">
+                            <h3>Treatment</h3>
+                            <table id="treatmentPatientsTable" class="table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -428,10 +470,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Filtered patients will be added here dynamically -->
+                                    <!-- Treatment patients will be added here dynamically -->
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <div id="examinePatientsList">
+                            <h3>Examine </h3>
+                            <table id="examinePatientsTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Exam Date</th>
+                                        <th>Diagnosis</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Examine patients will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+
+
                         <div id="exportOption" style="display: none;">
                             <p>Export Options:</p>
                             <button class="btn btn-primary" onclick="">Export Infomation</button>
@@ -699,49 +763,6 @@
                         </div>
                     </div>
 
-                    <div id="searchByDoctorContent" style="display: none;">
-                        <h2 id="searchByDoctorTable">Search by Doctor</h2>
-                        
-                        <!-- Search Bar Section -->
-                        <div>
-                            <label for="searchByName">Doctor's Name:</label>
-                            <input type="text" id="input_name" class="form-control">
-                        </div>
-                        
-                        <div>
-                            <label for="searchByDoctorID">Doctor's ID:</label>
-                            <input type="text" id="input_id" class="form-control">
-                        </div>
-                        
-
-                        <div class="col-md-12">
-                            <button id="search_by_doctor_button" class="btn btn-primary" type="button" >Search</button>
-                        </div>
-
-                        <!-- Filtered Patient List Section -->
-                        <div id="filteredPatientsList">
-                            <h3>Filtered Patients</h3>
-                            <table id="filteredPatientsTable" class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Phone Number</th>
-                                        <th>Address</th>
-                                        <th>Date of Birth</th>
-                                        <th>Gender</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Filtered patients will be added here dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-    
-                    </div>
 
                     <!-- Modal dislay patient infor-->
                     <div class="modal fade" id="patientInfoModal" tabindex="-1" role="dialog" aria-labelledby="patientInfoModalLabel" aria-hidden="true">
@@ -843,7 +864,7 @@
                     dataType: 'json',
                     success: function(data) {
                         // Clear the table before inserting new rows
-                        $('#filteredPatientsTable tbody').empty();
+                        $('#search_by_doctor_table tbody').empty();
 
                         // Iterate over the patient_list received from the server
                         $.each(data, function(index, patient) {
@@ -861,7 +882,64 @@
 
                             );
                             // Append the row to the table body
-                            $('#filteredPatientsTable tbody').append(row);
+                            $('#search_by_doctor_table tbody').append(row);
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors by logging to console or displaying to user
+                        console.log('Error fetching patient list:', textStatus, errorThrown);
+                    }
+                });
+                
+
+            });
+        });
+
+        $(document).ready(function() {
+            $('#search_by_patient_button').click(function() {
+                console.log('Search button clicked');
+                var input = $('#input_patientid').val();
+                
+                // Perform the AJAX GET request
+                $.ajax({
+                    url: '/search_by_patient',
+                    type: 'GET',
+                    data: {
+                        input_id: input
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Clear the table before inserting new rows
+                        $('#filteredPatientsTable tbody').empty();
+
+                        // Iterate over the patient_list received from the server
+                        $.each(data, function(index, patient) {
+                            // Create a table row for each patient
+                            if (patient.treatment_type === "Inpatient") {
+                                // Treatment patients
+                                var treatmentRow = $('<tr>').append(
+                                    $('<td>').text(patient.id),
+                                    $('<td>').text(patient.first_name),
+                                    $('<td>').text(patient.last_name),
+                                    $('<td>').text(patient.phone_number),
+                                    $('<td>').text(patient.treatment_detail.Treatment.Start_datetime),
+                                    $('<td>').text(patient.treatment_detail.Treatment.End_datetime),
+                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                );
+                                $('#treatmentPatientsTable tbody').append(treatmentRow);
+                            } else if (patient.treatment_type === "Outpatient") {
+                                // Examine patients
+                                var examineRow = $('<tr>').append(
+                                    $('<td>').text(patient.id),
+                                    $('<td>').text(patient.first_name),
+                                    $('<td>').text(patient.last_name),
+                                    $('<td>').text(patient.phone_number),
+                                    $('<td>').text(patient.treatment_detail.Examination.Exam_datetime),
+                                    $('<td>').text(patient.treatment_detail.Examination.Diagnosis),
+                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                );
+                                $('#examinePatientsTable tbody').append(examineRow);
+                            }
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {

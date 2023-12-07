@@ -71,20 +71,6 @@ class IpDetail(db.Model):
     Fee = db.Column(db.Integer, nullable=False)
     Nurse_ID = db.Column(db.CHAR(9), db.ForeignKey('nurse.NurseID'), nullable=False)
 
-
-class Outpatient(db.Model):
-    __tablename__ = 'outpatient'
-    OCode = db.Column(db.CHAR(9), db.ForeignKey('patient.Code'), primary_key=True)
-    # Assuming you have a relationship with Patient model
-
-
-
-class OpDetail(db.Model):
-    __tablename__ = 'op_detail'
-    OCode = db.Column(db.CHAR(9), db.ForeignKey('outpatient.OCode'), primary_key=True)
-    OP_visit = db.Column(db.Integer, primary_key=True)
-
-
 class TreatAttribute(db.Model):
     __tablename__ = 'treat_attribute'
     ICode = db.Column(db.CHAR(9), db.ForeignKey('ip_detail.ICode'), primary_key=True)
@@ -93,6 +79,20 @@ class TreatAttribute(db.Model):
     Start_datetime = db.Column(db.DateTime, primary_key=True)
     End_datetime = db.Column(db.DateTime, primary_key=True)
     Result = db.Column(db.VARCHAR(255), nullable=False)
+
+
+class Outpatient(db.Model):
+    __tablename__ = 'outpatient'
+    OCode = db.Column(db.CHAR(9), db.ForeignKey('patient.Code'), primary_key=True)
+    # Assuming you have a relationship with Patient model
+    op_details = db.relationship('OpDetail', backref='inpatient', lazy=True)
+
+
+class OpDetail(db.Model):
+    __tablename__ = 'op_detail'
+    OCode = db.Column(db.CHAR(9), db.ForeignKey('outpatient.OCode'), primary_key=True)
+    OP_visit = db.Column(db.Integer, primary_key=True)
+
 
 
 class ExamineDetail(db.Model):

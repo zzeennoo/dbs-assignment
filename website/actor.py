@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from .model import Patient, Employee, Doctor, Nurse, PhoneNumber, Inpatient, IpDetail, Outpatient, OpDetail, TreatAttribute, ExamineDetail, Use, UseFor, Medication, Effects
 from . import db
-from sqlalchemy import func
+from sqlalchemy import func, and_
+from sqlalchemy.orm import aliased
 
 
 actor = Blueprint('actor', __name__)
@@ -104,79 +105,94 @@ def search_by_doctor():
 
 @actor.route('/search_by_patient', methods=['GET'])
 def search_by_patient():
-    input = request.args.get('input_data')
+    input_id = request.args.get('input_id')
 
-    # Query to find the doctor by name or ID
-    patients = Patient.query.filter(func.concat(Patient.First_Name, ' ', Patient.Last_Name) == input).first()
-    if not patients: 
-        patients = Patient.query.filter_by(PhoneNumber = input).first()
+    # Aliases for inpatient-related tables
+    inpatient_alias = aliased(Inpatient)
+    ip_detail_alias = aliased(IpDetail)
+    treat_attribute_alias = aliased(TreatAttribute)
 
-    if not patients:
-        return jsonify({"error": "Doctor not found"}), 404
+    # Query for inpatient details including patient information
+    inpatient_query = db.session.query(Patient, IpDetail, TreatAttribute)\
+                    .join(inpatient_alias, Patient.inpatients)\
+                    .join(ip_detail_alias, inpatient_alias.ip_details)\
+                    .join(treat_attribute_alias, and_(
+                        ip_detail_alias.ICode == treat_attribute_alias.ICode, 
+                        ip_detail_alias.IP_visit == treat_attribute_alias.IP_visit))\
+                    .filter(Patient.Code == input_id)
 
-    patient_list = [{
-        "id": patient.Code,
-        "first_name": patient.First_Name,
-        "last_name": patient.Last_Name,
-        "phone_number": patient.Phone_number,
-        "address": patient.Address,
-        "date_of_birth": patient.Date_of_Birth.strftime("%Y-%m-%d"),
-        "gender": patient.Gender
-    } for patient in patients]
+    # Aliases for outpatient-related tables
+    outpatient_alias = aliased(Outpatient)
+    op_detail_alias = aliased(OpDetail)
+    examine_detail_alias = aliased(ExamineDetail)
+
+    # Query for outpatient details including patient information
+    outpatient_query = db.session.query(Patient, OpDetail, ExamineDetail)\
+                    .join(outpatient_alias, Patient.outpatients)\
+                    .join(op_detail_alias, outpatient_alias.op_details)\
+                    .join(examine_detail_alias, and_(
+                        op_detail_alias.OCode == examine_detail_alias.OCode, 
+                        op_detail_alias.OP_visit == examine_detail_alias.OP_visit))\
+                    .filter(Patient.Code == input_id)
+
+    # Execute the queries
+    inpatient_details = inpatient_query.all()
+    outpatient_details = outpatient_query.all()
+
+    patient_list = []
+
+    # Add Inpatient details if available
+    for patient, ip_detail, treat_attr in inpatient_details:
+        patient_list.append({
+            "id": patient.Code,
+            "first_name": patient.First_Name,
+            "last_name": patient.Last_Name,
+            "phone_number": patient.Phone_number,
+            "address": patient.Address,
+            "date_of_birth": patient.Date_of_Birth,
+            "gender": patient.Gender,
+            "treatment_type": "Inpatient",
+            "treatment_detail": {
+                "IP_visit": ip_detail.IP_visit,
+                "Diagnosis": ip_detail.Diagnosis,
+                "Treatment": {
+                    "DoctorID": treat_attr.DoctorID,
+                    "Start_datetime": treat_attr.Start_datetime,
+                    "End_datetime": treat_attr.End_datetime,
+                    "Result": treat_attr.Result
+                }
+            }
+        })
+
+    # Add Outpatient details if available
+    for patient, op_detail, examine_detail in outpatient_details:
+        patient_list.append({
+            "id": patient.Code,
+            "first_name": patient.First_Name,
+            "last_name": patient.Last_Name,
+            "phone_number": patient.Phone_number,
+            "address": patient.Address,
+            "date_of_birth": patient.Date_of_Birth,
+            "gender": patient.Gender,
+            "treatment_type": "Outpatient",
+            "treatment_detail": {
+                "OP_visit": op_detail.OP_visit,
+                "Examination": {
+                    "DoctorID": examine_detail.DoctorID,
+                    "Exam_datetime": examine_detail.Exam_datetime,
+                    "Diagnosis": examine_detail.Diagnosis,
+                    "Next_datetime": examine_detail.Next_datetime,
+                    "Fee": examine_detail.Fee
+                }
+            }
+        })
+
+    print("Number of elements in patient_list:", len(patient_list))
+    print("Treatment type of the first element in patient_list:", patient_list[0]['treatment_type'])
 
     return jsonify(patient_list)
 
-@actor.route('/export_patient_details', methods=['GET'])
-def export_patient_details():
-    patient_id = request.args.get('patient_id')
 
-    ip_code = 'IP'+patient_id
-    op_code = 'OP'+patient_id
-    
-    # Assuming you have methods to get the patient details
-    inpatient_details = get_inpatient_details(ip_code)
-    outpatient_details = get_outpatient_details(op_code)
-    
-    # Combine the details into one dictionary
-    patient_details = {
-        'inpatient': inpatient_details,
-        'outpatient': outpatient_details
-    }
-
-    return jsonify(patient_details)
-
-def get_inpatient_details(ip_code):
-    inpatient = Inpatient.query.filter_by(ICode=ip_code).first()
-
-    if not inpatient:
-        return None  # or return an empty dictionary if preferred
-
-    # Fetch the details of the inpatient stay
-    ip_details_list = []
-    for ip_detail in inpatient.ip_details:
-        # For each inpatient stay, fetch the treatment attributes
-        treat_attributes_list = []
-        for treat_attribute in ip_detail.treat_attribute:
-            treat_attributes_list.append({
-                "doctor_id": treat_attribute.DoctorID,
-                "start_datetime": treat_attribute.Start_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-                "end_datetime": treat_attribute.End_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-                "result": treat_attribute.Result
-            })
-        
-        # Add the detail of each stay to the list
-        ip_details_list.append({
-            "ip_visit": ip_detail.IP_visit,
-            "admission_date": ip_detail.Admission_date.strftime("%Y-%m-%d"),
-            "diagnosis": ip_detail.Diagnosis,
-            "sickroom": ip_detail.Sickroom,
-            "discharge_date": ip_detail.Discharge_date.strftime("%Y-%m-%d"),
-            "fee": ip_detail.Fee,
-            "nurse_id": ip_detail.Nurse_ID,
-            "treat_attributes": treat_attributes_list
-        })
-
-    return ip_details_list
 
 def get_outpatient_details(op_code):
     # Fetch the outpatient record that corresponds to the given OP code
