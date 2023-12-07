@@ -192,7 +192,7 @@ def search_by_patient():
         })
 
     print("Number of elements in patient_list:", len(patient_list))
-    print("Treatment type of the first element in patient_list:", patient_list[0]['treatment_type'])
+    print("Treatment type of the first element in patient_list:", patient_list[0]['phone_number'])
 
     return jsonify(patient_list)
 

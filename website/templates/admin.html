@@ -385,7 +385,7 @@
                     </div>
                     <!-- end tab 1-->
 
-                    <!--Search by doctor-->
+                    <!--Tab 2-->
                     <div id="searchByDoctorContent" style="display: none;">
                         <h2 id="searchByDoctorTable">Search by Doctor</h2>
                         
@@ -418,7 +418,7 @@
                                         <th>Address</th>
                                         <th>Date of Birth</th>
                                         <th>Gender</th>
-                                        <th>Action</th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -430,11 +430,9 @@
     
                     </div>
                     
-
-
                     <!--end tab 2-->
 
-                    <!-- Content for Search and Export -->
+                    <!-- Tab 3 -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
                         
@@ -782,7 +780,192 @@
                                 </div>
                             </div>
                         </div>
-                      </div>
+                    </div>
+
+                    <!--patient_treatment_detail_modal-->
+                    <div class="modal fade" id="patient_treatment_detail_modal" tabindex="-1" aria-labelledby="patientTreatmentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="patientTreatmentModalLabel">Treatment Details</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <form>
+                                        <!-- Patient Information -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_id">Patient ID:</label>
+                                                <input type="text" id="export_inpatient_id" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_inpatient_IP_visit">IP_Visit:</label>
+                                                <input type="text" id="export_inpatient_IP_visit" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_firstName">First Name:</label>
+                                                <input type="text" id="export_inpatient_firstName" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_inpatient_lastName">Last Name:</label>
+                                                <input type="text" id="export_inpatient_lastName" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Additional Information -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_phoneNumber">Phone Number:</label>
+                                                <input type="text" id="export_inpatient_phoneNumber" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_inpatient_address">Address:</label>
+                                                <input type="text" id="export_inpatient_address" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Treatment Details -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_Diagnosis">Diagnosis:</label>
+                                                <input type="text" id="export_inpatient_Diagnosis" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_inpatient_Sickroom">Sickroom:</label>
+                                                <input type="text" id="export_inpatient_Sickroom" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_Admission_date">Admission Date:</label>
+                                                <input type="text" id="export_inpatient_Admission_date" class="form-control" readonly>
+                                            </div>     
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_Discharge_date">Discharge Date:</label>
+                                                <input type="text" id="export_inpatient_Discharge_date" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Doctor Information -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_doctorID">Doctor ID:</label>
+                                                <input type="text" id="export_inpatient_doctorID" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_inpatient_Nurse_ID">Nurse ID:</label>
+                                                <input type="text" id="export_inpatient_Nurse_ID" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Treatment Dates -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_startTreatment">Start Treatment:</label>
+                                                <input type="text" id="export_inpatient_startTreatment" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_inpatient_endTreatment">End Treatment:</label>
+                                                <input type="text" id="export_inpatient_endTreatment" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--patient_examine_detail_modal-->
+                    <div class="modal fade" id="patient_examine_detail_modal" tabindex="-1" aria-labelledby="patientExamineModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="patientExamineModalLabel">Examine Details</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <form>
+                                        <!-- Patient Information -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_id">Patient ID:</label>
+                                                <input type="text" id="export_outpatient_id" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_outpatient_OP_visit">OP_Visit:</label>
+                                                <input type="text" id="export_outpatient_OP_visit" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_firstName">First Name:</label>
+                                                <input type="text" id="export_outpatient_firstName" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_outpatient_lastName">Last Name:</label>
+                                                <input type="text" id="export_outpatient_lastName" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Additional Information -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_phoneNumber">Phone Number:</label>
+                                                <input type="text" id="export_outpatient_phoneNumber" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_outpatient_address">Address:</label>
+                                                <input type="text" id="export_outpatient_address" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Treatment Details -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_Diagnosis">Diagnosis:</label>
+                                                <input type="text" id="export_outpatient_Diagnosis" class="form-control" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="export_outpatient_doctorID">Doctor ID:</label>
+                                                <input type="text" id="export_outpatient_doctorID" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_Exam_datetime">Examine Date:</label>
+                                                <input type="text" id="export_outpatient_Exam_datetime" class="form-control" readonly>
+                                            </div>     
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="export_outpatient_Next_datetime">Next Examine Date:</label>
+                                                <input type="text" id="export_outpatient_Next_datetime" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Doctor Information -->
+      
+                                    </form>
+                                    
+                                </div>
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    
                 </div>
             </div>
         </div>
@@ -870,7 +1053,7 @@
                                 $('<td>').text(patient.address),
                                 $('<td>').text(patient.date_of_birth),
                                 $('<td>').text(patient.gender),
-                                $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                //$('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
 
 
                             );
@@ -888,6 +1071,7 @@
             });
         });
 
+        //This is for search by patient
         $(document).ready(function() {
             $('#search_by_patient_button').click(function() {
                 console.log('Search button clicked');
@@ -907,6 +1091,13 @@
 
                         // Iterate over the patient_list received from the server
                         $.each(data, function(index, patient) {
+                            // 
+                            var treatmentDetailButton = $('<button>').addClass('btn btn-primary view-inpatient-detail-button').text('View Detail');
+                            treatmentDetailButton.data('patient', patient);
+
+                            // For outpatient details button
+                            var examineDetailButton = $('<button>').addClass('btn btn-primary view-outpatient-detail-button').text('View Detail');
+                            examineDetailButton.data('patient', patient);
                             // Create a table row for each patient
                             if (patient.treatment_type === "Inpatient") {
                                 // Treatment patients
@@ -916,8 +1107,9 @@
                                     $('<td>').text(patient.treatment_detail.Diagnosis),
                                     $('<td>').text(patient.treatment_detail.Treatment.Start_datetime),
                                     $('<td>').text(patient.treatment_detail.Treatment.End_datetime),
-                                        $('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientReport(\'' + patient + '\')">View Detail</button>'),
-                                    $('<td>').html('<button class="btn btn-primary" onclick="exportInpatientReport(\'' + patient + '\')">Export Payment</button>')
+                                    
+                                    $('<td>').append(treatmentDetailButton),
+                                    //$('<td>').html('<button class="btn btn-primary" onclick="exportInpatientReport(\'' + patient + '\')">Export Payment</button>')
 
                                 );
                                 $('#treatmentPatientsTable tbody').append(treatmentRow);
@@ -929,12 +1121,25 @@
                                     $('<td>').text(patient.phone_number),
                                     $('<td>').text(patient.treatment_detail.Examination.Exam_datetime),
                                     $('<td>').text(patient.treatment_detail.Examination.Diagnosis),
-                                    $('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientReport(\'' + patient + '\')">View Detail</button>'),
-                                        $('<td>').html('<button class="btn btn-primary" onclick="exportInpatientReport(\'' + patient + '\')">Export Payment</button>')
+                                    //$('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientDetail(\'' + patient + '\')">View Detail</button>'),
+                                    $('<td>').append(examineDetailButton),
+                                    //$('<td>').html('<button class="btn btn-primary" onclick="exportOutpatientReport(\'' + patient + '\')">Export Payment</button>')
                                 );
                                 $('#examinePatientsTable tbody').append(examineRow);
                             }
                         });
+
+                        $(document).on('click', '.view-inpatient-detail-button', function() {
+                            var patientData = $(this).data('patient');
+                            exportInpatientDetail(patientData); // This will call the function for inpatient details
+                        });
+
+                        $(document).on('click', '.view-outpatient-detail-button', function() {
+                            var patientData = $(this).data('patient');
+                            exportOutpatientDetail(patientData); // This will call the function for outpatient details
+                        });
+
+                        
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         // Handle any errors by logging to console or displaying to user
@@ -944,6 +1149,67 @@
 
             });
         });
+
+        // function attachClickEventListeners() {
+        //     // Attach a click event listener to the buttons after the table is populated
+        //     $('#filteredPatientsTable').on('click', '.view-detail-button', function() {
+        //         var patientData = $(this).data('patient');
+        //         exportOutpatientDetail(patientData);
+        //     });
+        // }
+
+        function exportInpatientDetail(patient) {
+            // Assuming 'patient' is an object that contains all the necessary information.
+            // Populate the modal fields with patient information.
+            $('#export_inpatient_id').val(patient.id);
+            $('#export_inpatient_firstName').val(patient.first_name);
+            $('#export_inpatient_lastName').val(patient.last_name);
+            $('#export_inpatient_phoneNumber').val(patient.phone_number);
+            $('#export_inpatient_address').val(patient.address);
+            $('#export_inpatient_date_of_birth').val(patient.date_of_birth);
+            $('#export_inpatient_gender').val(patient.gender);
+
+            $('#export_inpatient_IP_visit').val(patient.treatment_detail.IP_visit);
+            $('#export_inpatient_Diagnosis').val(patient.treatment_detail.Diagnosis);
+            $('#export_inpatient_Admission_date').val(patient.treatment_detail.Admission_date);
+            $('#export_inpatient_Discharge_date').val(patient.treatment_detail.Discharge_date);
+            $('#export_inpatient_Sickroom').val(patient.treatment_detail.Sickroom);
+            $('#export_inpatient_Fee').val(patient.treatment_detail.Fee);
+            $('#export_inpatient_Nurse_ID').val(patient.treatment_detail.Nurse_ID);
+
+            $('#export_inpatient_startTreatment').val(patient.treatment_detail.Treatment.Start_datetime);
+            $('#export_inpatient_endTreatment').val(patient.treatment_detail.Treatment.End_datetime);
+            $('#export_inpatient_doctorID').val(patient.treatment_detail.Treatment.DoctorID);
+
+            // Show the modal.
+            $('#patient_treatment_detail_modal').modal('show');
+        }
+
+        function exportOutpatientDetail(patient) {
+            // Assuming 'patient' is an object that contains all the necessary information.
+            // Populate the modal fields with patient information.
+            $('#export_outpatient_id').val(patient.id);
+            $('#export_outpatient_firstName').val(patient.first_name);
+            $('#export_outpatient_lastName').val(patient.last_name);
+            $('#export_outpatient_phoneNumber').val(patient.phone_number);
+            $('#export_outpatient_address').val(patient.address);
+            $('#export_outpatient_date_of_birth').val(patient.date_of_birth);
+            $('#export_outpatient_gender').val(patient.gender);
+
+            $('#export_outpatient_OP_visit').val(patient.treatment_detail.OP_visit);
+     
+       
+
+            $('#export_outpatient_Exam_datetime').val(patient.treatment_detail.Examination.Exam_datetime);
+            $('#export_outpatient_Next_datetime').val(patient.treatment_detail.Examination.Next_datetime);
+            $('#export_outpatient_doctorID').val(patient.treatment_detail.Examination.DoctorID);
+            $('#export_outpatient_Diagnosis').val(patient.treatment_detail.Examination.Diagnosis);
+            $('#export_outpatient_Fee').val(patient.treatment_detail.Examination.Fee);
+
+            // Show the modal.
+            $('#patient_examine_detail_modal').modal('show');
+        }
+
         
         function exportInpatientReport(patientId, ipVisit) {
             $.ajax({
