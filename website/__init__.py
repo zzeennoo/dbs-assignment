@@ -10,9 +10,10 @@ def create_app():
 
     #app configuration
     app.config['SECRET_KEY'] = 'abc'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Longvu123@localhost/assignment2'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:20032003@localhost/db_assignment2'
     ##############################
 
+    
     #init the login manager
     from .model import Patient
 
