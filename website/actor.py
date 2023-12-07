@@ -70,6 +70,8 @@ def search_by_doctor():
     doctor_name = request.args.get('doctor_name')
     doctor_id = request.args.get('doctor_id')
 
+    print('f')
+
     # Query to find the doctor by name or ID
     if doctor_name:
         doctor = Doctor.query.join(Employee).filter(
@@ -106,7 +108,7 @@ def search_by_doctor():
 def search_by_patient():
     patient_name = request.args.get('patient_name')
     phone_number = request.args.get('phone_number')
-
+    print('f')
     # Query to find the doctor by name or ID
     if patient_name:
         patients = Patient.query.filter(func.concat(Patient.First_Name, ' ', Patient.Last_Name) == patient_name).first()
@@ -117,16 +119,6 @@ def search_by_patient():
 
     if not doctor:
         return jsonify({"error": "Doctor not found"}), 404
-    
-
-    # treat_attributes = TreatAttribute.query.filter_by().all()
-    # examine_details = ExamineDetail.query.filter_by().all()
-
-    # Assuming you have relationships set up to access the patient from TreatAttribute and ExamineDetail
-    # patient_ids = {ta.ICode for ta in treat_attributes} | {ed.OCode for ed in examine_details}
-    
-    # # Assuming Patient model has a Code attribute that corresponds to ICode/OCode
-    # patients = Patient.query.filter(Patient.Code.in_(patient_ids)).all()
 
     patient_list = [{
         "id": patient.Code,

@@ -158,6 +158,8 @@
                 </div>
             </nav>
 
+
+            <!-- Content here -->
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container" id="contentContainer">
                     <!-- Content for Patient List -->
@@ -392,6 +394,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
@@ -409,8 +413,9 @@
                         
 
                         <div class="col-md-12">
-                            <button id="searchButton" class="btn btn-primary">Search</button>
+                            <button id="search_by_doctor_button" class="btn btn-primary" type="button" >Search</button>
                         </div>
+
                         <!-- Filtered Patient List Section -->
                         <div id="filteredPatientsList">
                             <h3>Filtered Patients</h3>
@@ -514,16 +519,14 @@
 
         //This is for search by doctor
         $(document).ready(function() {
-            $('#searchButton').click(function() {
+            $('#search_by_doctor_button').click(function() {
+                console.log('Search button clicked');
                 var doctorName = $('#input_name').val();
                 var doctorID = $('#input_id').val();
                 
-                // Construct the URL for the GET request
-                var requestURL = '/search_by_doctor';
-                
                 // Perform the AJAX GET request
                 $.ajax({
-                    url: requestURL,
+                    url: '/search_by_doctor',
                     type: 'GET',
                     data: {
                         doctor_name: doctorName,
@@ -545,7 +548,7 @@
                                 $('<td>').text(patient.address),
                                 $('<td>').text(patient.date_of_birth),
                                 $('<td>').text(patient.gender),
-                                    $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+                                $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
 
 
                             );
