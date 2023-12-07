@@ -70,8 +70,6 @@ def search_by_doctor():
     doctor_name = request.args.get('doctor_name')
     doctor_id = request.args.get('doctor_id')
 
-    print(doctor_id)
-
     # Query to find the doctor by name or ID
     if doctor_name:
         doctor = Doctor.query.join(Employee).filter(
@@ -83,7 +81,6 @@ def search_by_doctor():
         return jsonify({"error": "No search criteria provided"}), 400
 
     if not doctor:
-        print('f')
         return jsonify({"error": "Doctor not found"}), 404
     
 

@@ -244,12 +244,7 @@
                             </table>
                         </div>
                         
-                        <!-- Export Option Section -->
-                        <div id="exportOption" style="display: none;">
-                            <p>Export Options:</p>
-                            <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
-                            <!-- Add more export options if needed -->
-                        </div>
+    
                     </div>
 
                 </div>
@@ -334,7 +329,8 @@
                                 $('<td>').text(patient.address),
                                 $('<td>').text(patient.date_of_birth),
                                 $('<td>').text(patient.gender),
-                                $('<td>').html('<button onclick="doSomething(' + patient.id + ')">Action</button>')
+                                $('<td>').html('class="btn btn-primary" onclick="exportReport()">Export Report</button>')
+
                             );
                             // Append the row to the table body
                             $('#filteredPatientsTable tbody').append(row);
