@@ -163,6 +163,8 @@
             </nav>
             
 
+
+            <!-- Content here -->
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container" id="contentContainer">
                     <!-- Content for Patient List -->
@@ -173,10 +175,10 @@
                     
                         <!-- Search Bar -->
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="searchBar" placeholder="Search by Name or Phone Number">
+                            <input type="text" class="form-control" id="input_name_or_phone" placeholder="Search by Name or Phone Number">
                         </div>
 
-                        <button class="btn btn-primary" type="button" id="searchButton">Search</button>
+                        <button class="btn btn-primary" type="button" id="search_by_patient_button">Search</button>
                     
                         <table id="patientsDataTable" class="table">
                             <thead>
@@ -216,6 +218,7 @@
                         </table>
                     </div>
 
+                    <!-- Modal to add patient-->
                     <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -396,7 +399,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
@@ -713,8 +715,9 @@
                         
 
                         <div class="col-md-12">
-                            <button id="searchButton" class="btn btn-primary">Search</button>
+                            <button id="search_by_doctor_button" class="btn btn-primary" type="button" >Search</button>
                         </div>
+
                         <!-- Filtered Patient List Section -->
                         <div id="filteredPatientsList">
                             <h3>Filtered Patients</h3>
@@ -737,9 +740,35 @@
                             </table>
                         </div>
                         
-                    
+    
                     </div>
 
+                    <!-- Modal dislay patient infor-->
+                    <div class="modal fade" id="patientInfoModal" tabindex="-1" role="dialog" aria-labelledby="patientInfoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="patientInfoModalLabel">Patient Information</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Dynamic patient details will be loaded here -->
+                                    <div id="patientDetails"></div>
+                                    <hr>
+                                    <h6>Treatments</h6>
+                                    <div id="patientTreatments"></div>
+                                    <hr>
+                                    <h6>Examinations</h6>
+                                    <div id="patientExaminations"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
@@ -751,11 +780,13 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
     <script>
-        function changeTab(tab) {
-        // Hide all content sections
-        $('#patientsTableContent').hide();
-        $('#searchExportContent').hide();
-        $('#searchByDoctorContent').hide();
+      function changeTab(tab) {
+            // Hide all content sections
+            $('#patientsTableContent').hide();
+            $('#addTreatmentContent').hide();
+            $('#addExamineContent').hide();
+            $('#searchExportContent').hide();
+            $('#searchByDoctorContent').hide();
 
         // Remove 'active' class from all links
         $('#sidebar .nav-link').removeClass('active');
@@ -794,17 +825,16 @@
             console.log("Edit Patient clicked for ID: " + id);
         }
 
+        //This is for search by doctor
         $(document).ready(function() {
-            $('#searchButton').click(function() {
+            $('#search_by_doctor_button').click(function() {
+                console.log('Search button clicked');
                 var doctorName = $('#input_name').val();
                 var doctorID = $('#input_id').val();
                 
-                // Construct the URL for the GET request
-                var requestURL = '/search_by_doctor';
-                
                 // Perform the AJAX GET request
                 $.ajax({
-                    url: requestURL,
+                    url: '/search_by_doctor',
                     type: 'GET',
                     data: {
                         doctor_name: doctorName,
@@ -826,7 +856,9 @@
                                 $('<td>').text(patient.address),
                                 $('<td>').text(patient.date_of_birth),
                                 $('<td>').text(patient.gender),
-                                $('<td>').html('<button onclick="doSomething(' + patient.id + ')">Action</button>')
+                                $('<td>').html('<button class="btn btn-primary" onclick="exportReport(\'' + patient.id + '\')">Export Report</button>')
+
+
                             );
                             // Append the row to the table body
                             $('#filteredPatientsTable tbody').append(row);
@@ -841,6 +873,13 @@
 
             });
         });
+        
+
+        // Function to handle the export of a specific patient report
+        function exportReport(patientId) {
+            // Implement logic to export the report for the selected patient
+            console.log('Export report for patient ID:', patientId);
+        }
 
         function addTreatment(patientCode) {
             // Implement logic to show the Accept Treatment modal for the selected patient
