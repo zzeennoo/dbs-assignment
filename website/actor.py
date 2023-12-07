@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
-from .model import Patient
+from .model import Patient, Employee, Doctor, Nurse, PhoneNumber, Inpatient, IpDetail, Outpatient, OpDetail, TreatAttribute, ExamineDetail, Use, UseFor
 from . import db
+from sqlalchemy import func
+
 
 actor = Blueprint('actor', __name__)
 
@@ -63,8 +65,49 @@ def add_patient():
     # Redirect back to the admin page
     return redirect(url_for('actor.admin'))
 
+@actor.route('/search_by_doctor', methods=['GET'])
+def search_by_doctor():
+    doctor_name = request.args.get('doctor_name')
+    doctor_id = request.args.get('doctor_id')
 
+    print(doctor_id)
 
+    # Query to find the doctor by name or ID
+    if doctor_name:
+        doctor = Doctor.query.join(Employee).filter(
+            func.concat(Employee.First_Name, ' ', Employee.Last_Name) == doctor_name
+        ).first()
+    elif doctor_id:
+        doctor = Doctor.query.filter_by(DoctorID=doctor_id).first()
+    else:
+        return jsonify({"error": "No search criteria provided"}), 400
+
+    if not doctor:
+        print('f')
+        return jsonify({"error": "Doctor not found"}), 404
+    
+
+    # Assuming you have a relationship set up in the Doctor model for TreatAttribute and ExamineDetail
+    treat_attributes = TreatAttribute.query.filter_by(DoctorID=doctor.DoctorID).all()
+    examine_details = ExamineDetail.query.filter_by(DoctorID=doctor.DoctorID).all()
+
+    # Assuming you have relationships set up to access the patient from TreatAttribute and ExamineDetail
+    patient_ids = {ta.ICode for ta in treat_attributes} | {ed.OCode for ed in examine_details}
+    
+    # Assuming Patient model has a Code attribute that corresponds to ICode/OCode
+    patients = Patient.query.filter(Patient.Code.in_(patient_ids)).all()
+
+    patient_list = [{
+        "id": patient.Code,
+        "first_name": patient.First_Name,
+        "last_name": patient.Last_Name,
+        "phone_number": patient.Phone_number,
+        "address": patient.Address,
+        "date_of_birth": patient.Date_of_Birth.strftime("%Y-%m-%d"),
+        "gender": patient.Gender
+    } for patient in patients]
+
+    return jsonify(patient_list)
 
 
 @actor.route('/doctor')

@@ -220,7 +220,7 @@
                         
 
                         <div class="col-md-12">
-                            <button class="btn btn-primary" onclick="handleSearch()">Search</button>
+                            <button id="searchButton" class="btn btn-primary">Search</button>
                         </div>
                         <!-- Filtered Patient List Section -->
                         <div id="filteredPatientsList">
@@ -295,62 +295,68 @@
                 });
 
                 
-            });
+        });
 
         function editPatient(id) {
             // Implement logic to edit patient information
             console.log("Edit Patient clicked for ID: " + id);
         }
 
-        var filteredPatients = [
-            { id: 1, firstName: 'John', lastName: 'Doe', phoneNumber: '123-456-7890', address: '123 Main St', dateOfBirth: '1990-01-01', gender: 'Male' },
-            { id: 2, firstName: 'Jane', lastName: 'Doe', phoneNumber: '987-654-3210', address: '456 Oak St', dateOfBirth: '1992-05-15', gender: 'Female' },
-            // Add more patients as needed
-        ];
+        $(document).ready(function() {
+            $('#searchButton').click(function() {
+                var doctorName = $('#input_name').val();
+                var doctorID = $('#input_id').val();
+                
+                // Construct the URL for the GET request
+                var requestURL = '/search_by_doctor';
+                
+                // Perform the AJAX GET request
+                $.ajax({
+                    url: requestURL,
+                    type: 'GET',
+                    data: {
+                        doctor_name: doctorName,
+                        doctor_id: doctorID
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Clear the table before inserting new rows
+                        $('#filteredPatientsTable tbody').empty();
 
-        // Function to populate the filtered patient table
-        function populateFilteredPatients() {
-            var tableBody = $('#filteredPatientsTable tbody');
-            tableBody.empty(); // Clear existing rows
+                        // Iterate over the patient_list received from the server
+                        $.each(data, function(index, patient) {
+                            // Create a table row for each patient
+                            var row = $('<tr>').append(
+                                $('<td>').text(patient.id),
+                                $('<td>').text(patient.first_name),
+                                $('<td>').text(patient.last_name),
+                                $('<td>').text(patient.phone_number),
+                                $('<td>').text(patient.address),
+                                $('<td>').text(patient.date_of_birth),
+                                $('<td>').text(patient.gender),
+                                $('<td>').html('<button onclick="doSomething(' + patient.id + ')">Action</button>')
+                            );
+                            // Append the row to the table body
+                            $('#filteredPatientsTable tbody').append(row);
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors by logging to console or displaying to user
+                        console.log('Error fetching patient list:', textStatus, errorThrown);
+                    }
+                });
+                
 
-            // Iterate over filteredPatients and add rows to the table
-            filteredPatients.forEach(function (patient) {
-                var row = $('<tr>');
-                row.append('<td>' + patient.id + '</td>');
-                row.append('<td>' + patient.firstName + '</td>');
-                row.append('<td>' + patient.lastName + '</td>');
-                row.append('<td>' + patient.phoneNumber + '</td>');
-                row.append('<td>' + patient.address + '</td>');
-                row.append('<td>' + patient.dateOfBirth + '</td>');
-                row.append('<td>' + patient.gender + '</td>');
-                row.append('<td><button class="btn btn-primary" onclick="exportReport(' + patient.id + ')">Export</button></td>');
-
-                tableBody.append(row);
             });
-        }
-
-        // Call the function to populate the filtered patient table
-        populateFilteredPatients();
+        });
+        
 
         // Function to handle the export of a specific patient report
         function exportReport(patientId) {
             // Implement logic to export the report for the selected patient
             console.log('Export report for patient ID:', patientId);
         }
-        function handleSearch() {
-        // Get the values from the search bars
-            var searchByName = $('#searchByName').val();
-            var searchByIP = $('#searchByIP').val();
-            var searchByOP = $('#searchByOP').val();
 
-            // Log the search queries (you can replace this with your search logic)
-            console.log('Search by Name:', searchByName);
-            console.log('Search by IP Code:', searchByIP);
-            console.log('Search by OP Code:', searchByOP);
-
-            // Assuming you have logic to filter the patients based on the search queries
-            // For demonstration purposes, I'm logging the search queries only
-        }
         function logout() {
             // Show a confirmation dialog to the user
             var confirmLogout = confirm("Are you sure you want to log out?");

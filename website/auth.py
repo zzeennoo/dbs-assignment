@@ -35,6 +35,16 @@ def doctor_login():
         doctor = Doctor.query.join(Employee, Doctor.DoctorID == Employee.EmployeeID)\
                              .join(PhoneNumber, Employee.EmployeeID == PhoneNumber.EmployeeID)\
                              .filter(PhoneNumber.Phone_no == phone_number).first()
+        
+        first_employee = db.session.query(Employee).first()
+        if first_employee:
+            print("First Name:", first_employee.First_Name)
+            print("Last Name:", first_employee.Last_Name)
+
+            full_name = f"{first_employee.First_Name} {first_employee.Last_Name}"
+            print("Full Name:", full_name)
+        else:
+            print("No employees found.")
 
         if doctor:
             if doctor.employee.Password == password:
