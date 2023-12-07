@@ -11,6 +11,7 @@
     <!-- DataTables JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         #contentContainer {
             overflow-y: auto; /* Enable vertical scrolling for the content container */
@@ -135,31 +136,32 @@
 
             <!-- Sidebar -->
             <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
-                <div class="position-sticky">
+                <div class="position-sticky pt-3">
                     <!-- Go Back Button -->
-                    <button id="goBackButton" type="button" class="btn btn-secondary" onclick="logout()">
+                    <button id="goBackButton" type="button" class="btn btn-secondary mb-4" onclick="logout()">
                         Logout
                     </button>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#patient_list" onclick="changeTab(this)">
-                                Patient List
+                            <a class="nav-link active" href="#patient_list" onclick="changeTab(this)" data-tabname="Patient List">
+                                <i class="fas fa-user-injured"></i> Patient List
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#search_by_doctor" onclick="changeTab(this)">
-                                Search by Doctor
+                            <a class="nav-link" href="#search_by_doctor" onclick="changeTab(this)" data-tabname="Search by Doctor">
+                                <i class="fas fa-search"></i> Search by Doctor
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#search_and_export" onclick="changeTab(this)">
-                                Search and Export
+                            <a class="nav-link" href="#search_and_export" onclick="changeTab(this)" data-tabname="Search and Export">
+                                <i class="fas fa-file-export"></i> Search and Export
                             </a>
                         </li>
                         <!-- Add more sidebar items as needed -->
                     </ul>
                 </div>
             </nav>
+            
 
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container" id="contentContainer">
@@ -394,10 +396,11 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Content for Search and Export -->
                     <div id="searchExportContent" style="display: none;">
                         <h2 id="searchExportTable">Search and Export</h2>
-                        <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
+                        <button class="btn btn-primary" onclick="exportPayment()">Test button</button>
                         <!-- Search Bar Section -->
                         <div>
                             <label for="searchByName">PatientID</label>
@@ -429,77 +432,263 @@
                         </div>
                         <div id="exportOption" style="display: none;">
                             <p>Export Options:</p>
-                            <button class="btn btn-primary" onclick="exportReport()">Export Report</button>
+                            <button class="btn btn-primary" onclick="">Export Infomation</button>
+                            <button class="btn btn-primary" onclick="exportPayment()">Export Payment</button>
                             <!-- Add more export options if needed -->
                         </div>
                     </div>
 
                     <!-- Report modal-->
-                    <div class="modal" id="patientInfoModal">
-                        <div class="modal-dialog">
+                    <style>
+                        .wide-modal {
+                            width: 100%;
+                        }
+                        .modal::-webkit-scrollbar {
+                            position: fixed;
+                            right: 0;
+                        }
+                    </style>
+                    <!--Treatment info modal-->
+                    <div class="modal wide-modal" id="patientTreatmentodal">
+                        <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <!-- Modal Header -->
                                 <div class="modal-header">
                                     <h4 class="modal-title">Patient Information</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-
                                 <!-- Modal Body -->
                                 <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="patientID" class="form-label">Patient ID:</label>
-                                        <input type="text" class="form-control" id="patientID" readonly>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="firstName" class="form-label">First Name:</label>
+                                            <input type="text" class="form-control" id="firstName" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="lastName" class="form-label">Last Name:</label>
+                                            <input type="text" class="form-control" id="lastName" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="gender" class="form-label">Gender:</label>
+                                            <input type="text" class="form-control" id="gender" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="firstName" class="form-label">First Name:</label>
-                                        <input type="text" class="form-control" id="firstName" readonly>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
+                                            <input type="text" class="form-control" id="phoneNumber" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="patientID" class="form-label">Patient ID:</label>
+                                            <input type="text" class="form-control" id="patientID" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="lastName" class="form-label">Last Name:</label>
-                                        <input type="text" class="form-control" id="lastName" readonly>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="address" class="form-label">Address:</label>
+                                            <input type="text" class="form-control" id="address" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="visitCode" class="form-label">Visit Code:</label>
-                                        <input type="text" class="form-control" id="visitCode" readonly>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="doctorCode" class="form-label">Doctor Code:</label>
+                                            <input type="text" class="form-control" id="doctorCode" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="phoneNumber" class="form-label">Phone Number:</label>
-                                        <input type="text" class="form-control" id="phoneNumber" readonly>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="startTreatment" class="form-label">Start Treatment:</label>
+                                            <input type="text" class="form-control" id="startTreatment" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="endTreatment" class="form-label">End Treatment:</label>
+                                            <input type="text" class="form-control" id="endTreatment" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label">Address:</label>
-                                        <input type="text" class="form-control" id="address" readonly>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="doctorID" class="form-label">Doctor ID:</label>
+                                            <input type="text" class="form-control" id="doctorID" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="visitCode" class="form-label">Visit Code:</label>
+                                            <input type="text" class="form-control" id="visitCode" readonly>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="dateOfBirth" class="form-label">Date of Birth:</label>
-                                        <input type="text" class="form-control" id="dateOfBirth" readonly>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="medicineList" class="form-label">Medicine List:</label>
+                                            <textarea class="form-control" id="medicineList" readonly></textarea>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="gender" class="form-label">Gender:</label>
-                                        <input type="text" class="form-control" id="gender" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="startTreatment" class="form-label">Start Treatment:</label>
-                                        <input type="text" class="form-control" id="startTreatment" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="endTreatment" class="form-label">End Treatment:</label>
-                                        <input type="text" class="form-control" id="endTreatment" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="doctorID" class="form-label">Doctor ID:</label>
-                                        <input type="text" class="form-control" id="doctorID" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="medicineList" class="form-label">Medicine List:</label>
-                                        <textarea class="form-control" id="medicineList" readonly></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="totalPrice" class="form-label">Total Price:</label>
-                                        <input type="text" class="form-control" id="totalPrice" readonly>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="totalPrice" class="form-label">Total Price:</label>
+                                            <input type="text" class="form-control" id="totalPrice" readonly>
+                                        </div>
                                     </div>
                                 </div>
-
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Examine info modal-->
+                    <div class="modal wide-modal" id="patientTreatmentodal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Patient Information</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="firstName" class="form-label">First Name:</label>
+                                            <input type="text" class="form-control" id="firstName" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="lastName" class="form-label">Last Name:</label>
+                                            <input type="text" class="form-control" id="lastName" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="gender" class="form-label">Gender:</label>
+                                            <input type="text" class="form-control" id="gender" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
+                                            <input type="text" class="form-control" id="phoneNumber" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="patientID" class="form-label">Patient ID:</label>
+                                            <input type="text" class="form-control" id="patientID" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="address" class="form-label">Address:</label>
+                                            <input type="text" class="form-control" id="address" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="doctorCode" class="form-label">Doctor Code:</label>
+                                            <input type="text" class="form-control" id="doctorCode" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="startTreatment" class="form-label">Start Treatment:</label>
+                                            <input type="text" class="form-control" id="startTreatment" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="endTreatment" class="form-label">End Treatment:</label>
+                                            <input type="text" class="form-control" id="endTreatment" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="doctorID" class="form-label">Doctor ID:</label>
+                                            <input type="text" class="form-control" id="doctorID" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="visitCode" class="form-label">Visit Code:</label>
+                                            <input type="text" class="form-control" id="visitCode" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="medicineList" class="form-label">Medicine List:</label>
+                                            <textarea class="form-control" id="medicineList" readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="totalPrice" class="form-label">Total Price:</label>
+                                            <input type="text" class="form-control" id="totalPrice" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal for Export Payment -->
+                    <div class="modal wide-modal" id="exportPaymentModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Export Payment Information</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="patientName" class="form-label">Patient Name:</label>
+                                            <input type="text" class="form-control" id="patientName" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="patientID" class="form-label">Patient ID:</label>
+                                            <input type="text" class="form-control" id="patientID" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
+                                            <input type="text" class="form-control" id="phoneNumber" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="admissionDate" class="form-label">Admission Date:</label>
+                                            <input type="text" class="form-control" id="admissionDate" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="billingDate" class="form-label">Billing Date:</label>
+                                            <input type="text" class="form-control" id="billingDate" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="treatmentFee" class="form-label">Treatment Fee:</label>
+                                            <input type="text" class="form-control" id="treatmentFee" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label">Medicine Bill:</label>
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Name</th>
+                                                        <th>Price</th>
+                                                        <th>Amount</th>
+                                                        <th>Total Cost</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="medicineBillTableBody">
+                                                    <!-- Medicine bill details will be added here dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="totalSum" class="form-label">Total Sum:</label>
+                                            <input type="text" class="form-control" id="totalSum" readonly>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Modal Footer -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -508,7 +697,7 @@
                         </div>
                     </div>
 
-                    <div id="searchByDoctorContent" style="display: node;">
+                    <div id="searchByDoctorContent" style="display: none;">
                         <h2 id="searchByDoctorTable">Search by Doctor</h2>
                         
                         <!-- Search Bar Section -->
@@ -562,32 +751,33 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     
     <script>
-      function changeTab(tab) {
-            // Hide all content sections
-            $('#patientsTableContent').hide();
-            $('#addTreatmentContent').hide();
-            $('#addExamineContent').hide();
-            $('#searchExportContent').hide();
-            $('#searchByDoctorContent').hide();
+        function changeTab(tab) {
+        // Hide all content sections
+        $('#patientsTableContent').hide();
+        $('#searchExportContent').hide();
+        $('#searchByDoctorContent').hide();
 
-            // Remove 'active' class from all links
-            $('#sidebar .nav-link').removeClass('active');
+        // Remove 'active' class from all links
+        $('#sidebar .nav-link').removeClass('active');
 
-            // Show the selected content section
-            if (tab.innerText === "Patient List") {
-                $('#patientsTableContent').show();
-            } else if (tab.innerText === "Search and Export") {
-                $('#searchExportContent').show();
-            } else if (tab.innerText === "Search by Doctor") {
-                $('#searchByDoctorContent').show()
-            }
+        // Get the tab name from the data attribute
+        var tabName = $(tab).data('tabname');
 
-            // Add 'active' class to the clicked link
-            $(tab).addClass('active');
-
-            // Log the clicked tab for demonstration purposes
-            console.log("Tab clicked: " + tab.innerText);
+        // Show the selected content section
+        if (tabName === "Patient List") {
+            $('#patientsTableContent').show();
+        } else if (tabName === "Search and Export") {
+            $('#searchExportContent').show();
+        } else if (tabName === "Search by Doctor") {
+            $('#searchByDoctorContent').show()
         }
+
+        // Add 'active' class to the clicked link
+        $(tab).addClass('active');
+
+        // Log the clicked tab for demonstration purposes
+        console.log("Tab clicked: " + tabName);
+    }
 
         $(document).ready(function () {
 
@@ -651,13 +841,6 @@
 
             });
         });
-        
-
-        // Function to handle the export of a specific patient report
-        function exportReport(patientId) {
-            // Implement logic to export the report for the selected patient
-            console.log('Export report for patient ID:', patientId);
-        }
 
         function addTreatment(patientCode) {
             // Implement logic to show the Accept Treatment modal for the selected patient
@@ -753,8 +936,7 @@
         }
 
          // Function to handle export button click
-        function exportReport() {
-            // Dummy values for patient information (replace with actual values from backend)
+        function viewInformation() {
             const patientInfo = {
                 patientID: "P001",
                 firstName: "John",
@@ -788,6 +970,52 @@
 
             // Show the patient information modal
             $('#patientInfoModal').modal('show');
+        }
+
+        function exportPayment() {
+            // Dummy values for payment information (replace with actual values from backend)
+            const paymentInfo = {
+                patientName: "John Doe",
+                patientID: "P001",
+                phoneNumber: "123-456-7890",
+                admissionDate: "2023-01-01",
+                billingDate: "2023-01-15",
+                treatmentFee: "$200",
+                medicineBill: [
+                    { code: "M001", name: "Medicine A", amount: 2, price: "$25", totalCost: "$50" },
+                    { code: "M002", name: "Medicine B", amount: 1, price: "$30", totalCost: "$30" },
+                    { code: "M003", name: "Medicine C", amount: 3, price: "$20", totalCost: "$70" }
+                    // Add more medicine bill details as needed
+                ],
+                totalSum: "$250"
+            };
+
+            // Populate the export payment modal with actual values
+            document.getElementById('patientName').value = paymentInfo.patientName;
+            document.getElementById('patientID').value = paymentInfo.patientID;
+            document.getElementById('phoneNumber').value = paymentInfo.phoneNumber;
+            document.getElementById('admissionDate').value = paymentInfo.admissionDate;
+            document.getElementById('billingDate').value = paymentInfo.billingDate;
+            document.getElementById('treatmentFee').value = paymentInfo.treatmentFee;
+
+            // Populate the medicine bill details dynamically
+            const medicineBillTableBody = document.getElementById('medicineBillTableBody');
+            medicineBillTableBody.innerHTML = ""; // Clear previous entries
+            paymentInfo.medicineBill.forEach((medicine) => {
+                const row = `<tr>
+                                <td>${medicine.code}</td>
+                                <td>${medicine.name}</td>
+                                <td>${medicine.price}</td>
+                                <td>${medicine.amount}</td>
+                                <td>${medicine.totalCost}</td>
+                            </tr>`;
+                medicineBillTableBody.innerHTML += row;
+            });
+
+            document.getElementById('totalSum').value = paymentInfo.totalSum;
+
+            // Show the export payment modal
+            $('#exportPaymentModal').modal('show');
         }
             
 
