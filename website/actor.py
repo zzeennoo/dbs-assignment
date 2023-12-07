@@ -70,8 +70,6 @@ def search_by_doctor():
     doctor_name = request.args.get('doctor_name')
     doctor_id = request.args.get('doctor_id')
 
-    print('f')
-
     # Query to find the doctor by name or ID
     if doctor_name:
         doctor = Doctor.query.join(Employee).filter(
@@ -106,18 +104,14 @@ def search_by_doctor():
 
 @actor.route('/search_by_patient', methods=['GET'])
 def search_by_patient():
-    patient_name = request.args.get('patient_name')
-    phone_number = request.args.get('phone_number')
-    print('f')
-    # Query to find the doctor by name or ID
-    if patient_name:
-        patients = Patient.query.filter(func.concat(Patient.First_Name, ' ', Patient.Last_Name) == patient_name).first()
-    elif phone_number:
-        patients = Patient.query.filter_by(PhoneNumber = phone_number).first()
-    else:
-        return jsonify({"error": "No search criteria provided"}), 400
+    input = request.args.get('input_data')
 
-    if not doctor:
+    # Query to find the doctor by name or ID
+    patients = Patient.query.filter(func.concat(Patient.First_Name, ' ', Patient.Last_Name) == input).first()
+    if not patients: 
+        patients = Patient.query.filter_by(PhoneNumber = input).first()
+
+    if not patients:
         return jsonify({"error": "Doctor not found"}), 404
 
     patient_list = [{
