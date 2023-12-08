@@ -66,6 +66,21 @@ def add_patient():
     # Redirect back to the admin page
     return redirect(url_for('actor.admin'))
 
+@actor.route('/add_examine')
+def add_examine():
+    patient_code = request.form.get('e_patient_code')
+    op_visit = request.form.get('e_OP_visit')
+    doctor_id = request.form.get('e_doctor_id')
+    exam_date = request.form.get('e_exam_date')
+    next_date = request.form.get('e_next_date')
+    diagnosis = request.form.get('e_diagnosis')
+    exam_fee = request.form.get('e_fee')
+    #medicines = request.form.getlist('medicines') 
+
+    
+
+    return redirect(url_for('actor.admin'))
+
 @actor.route('/search_by_doctor', methods=['GET'])
 def search_by_doctor():
     doctor_name = request.args.get('doctor_name')
@@ -190,10 +205,6 @@ def search_by_patient():
                 }
             }
         })
-
-    # print("Number of elements in patient_list:", len(patient_list))
-    # print("Treatment type of the first element in patient_list:", patient_list[0]['phone_number'])
-
     return jsonify(patient_list)
 
 

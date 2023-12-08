@@ -165,12 +165,17 @@
             <!-- Content here -->
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container" id="contentContainer">
-                    <!-- Content for Patient List -->
+                    <!-- Content for Patient List 
+                    -->
                     <div id="patientsTableContent">
                         <h2 id="patientsTable">Patient List</h2>
                         <!-- Add Patient Button -->
-                        <button id="addPatientButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
-                    
+                        <div class ="row">
+                            <button id="addPatientButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
+                            <button id = "addTreatmentButton" class="btn btn-add-treatment btn-success btn-sm" >Add Treatment</button>
+                            <button id = "addExamineButton" class="btn btn-add-examine btn-info btn-sm" >Add Examine</button>
+                        </div>
+                        
                         <table id="patientsDataTable" class="table">
                             <thead>
                                 <tr>
@@ -181,7 +186,6 @@
                                     <th>Address</th>
                                     <th>Date of Birth</th>
                                     <th>Gender</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -195,10 +199,7 @@
                                         <td>{{ patient.Address }}</td>
                                         <td>{{ patient.Date_of_Birth }}</td>
                                         <td>{{ patient.Gender }}</td>
-                                        <td>
-                                            <button class="btn btn-add-treatment btn-success btn-sm" onclick="addTreatment('{{ patient.Code }}')">Add Treatment</button>
-                                            <button class="btn btn-add-examine btn-info btn-sm" onclick="addExamine('{{ patient.Code }}')">Add Examine</button>
-                                        </td>
+                                        
                                     </tr>
                                 {% else %}
                                     <tr>
@@ -209,7 +210,8 @@
                         </table>
                     </div>
 
-                    <!-- Modal to add patient-->
+                    <!-- Modal to add patient
+                    -->
                     <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -268,121 +270,77 @@
                       </div>
                     </div>
                     
-                    <div class="modal" id="acceptTreatmentModal">
-                        <div class="modal-dialog">
+                    <!-- Add Examine Modal -->
+                    <div class="modal fade" id="addExamineModal" tabindex="-1" role="dialog" aria-labelledby="addExamineModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <!-- Modal Header -->
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Add Treatment</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title" id="addExamineModalLabel">Add Examine Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                    
-                                <!-- Modal Body -->
                                 <div class="modal-body">
-                                    <!-- Form elements for treatment details -->
-                                    <form id="acceptTreatmentForm">
-                                        <!-- IP Detail -->
-                                        <div class="mb-3">
-                                            <label for="ICode" class="form-label">ICode:</label>
-                                            <input type="text" class="form-control" id="ICode" name="ICode" required>
+                                    <!-- Form to add examine details -->
+                                    <form id="addExamineForm", action = "{{ url_for('actor.add_examine')}}" method = "POST">
+                                        <!-- Input fields for examine details -->
+                                        <div class="form-group">
+                                            <label for="e_patient_code">Patient Code</label>
+                                            <input type="text" class="form-control" id="e_patient_code" name="e_patient_code" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="admissionDate" class="form-label">Admission Date:</label>
-                                            <input type="datetime-local" class="form-control" id="admissionDate" name="admissionDate" required>
+                                        <div class="form-group">
+                                            <label for="e_OP_visit">OP_Visit</label>
+                                            <input type="text" class="form-control" id="e_OP_visit" name="e_OP_visit" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="diagnosis" class="form-label">Diagnosis:</label>
-                                            <textarea class="form-control" id="diagnosis" name="diagnosis" required></textarea>
+                                        <div class="form-group">
+                                            <label for="e_doctor_id">Doctor ID</label>
+                                            <input type="text" class="form-control" id="e_doctor_id" name="e_doctor_id" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="sickroom" class="form-label">Sickroom:</label>
-                                            <input type="text" class="form-control" id="sickroom" name="sickroom" required>
+                                        <div class="form-group">
+                                            <label for="e_exam_date">Examine Date</label>
+                                            <input type="date" class="form-control" id="e_exam_date" name="e_exam_date" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="dischargeDate" class="form-label">Discharge Date:</label>
-                                            <input type="datetime-local" class="form-control" id="dischargeDate" name="dischargeDate" required>
+                                        <div class="form-group">
+                                            <label for="e_next_date">Next Examine Date</label>
+                                            <input type="date" class="form-control" id="e_next_date" name="e_next_date">
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="fee" class="form-label">Fee:</label>
-                                            <input type="text" class="form-control" id="fee" name="fee" required>
+                                        <div class="form-group">
+                                            <label for="e_diagnosis">Diagnosis</label>
+                                            <input type="text" class="form-control" id="e_diagnosis" name="e_diagnosis" required>
                                         </div>
-                    
-                                        <!-- Treat Attribute -->
-                                        <div class="mb-3">
-                                            <label for="doctorID" class="form-label">Doctor ID:</label>
-                                            <input type="text" class="form-control" id="doctorID" name="doctorID" required>
+                                        <div class="form-group">
+                                            <label for="e_fee">Examine Fee</label>
+                                            <input type="text" class="form-control" id="e_fee" name="e_fee" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="startDatetime" class="form-label">Start Datetime:</label>
-                                            <input type="datetime-local" class="form-control" id="startDatetime" name="startDatetime" required>
+
+                                        <!-- Dynamic input fields for medicines will be added here -->
+                                        <div id="medicineInputContainer"></div>
+                                        <!-- Dropdown to select number of medicines -->
+                                        <div class="form-group">
+                                            <label for="medicineCount">Number of Medicines</label>
+                                            <select class="form-control" id="medicineCount">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="endDatetime" class="form-label">End Datetime:</label>
-                                            <input type="datetime-local" class="form-control" id="endDatetime" name="endDatetime" required>
-                                        </div>
-                    
-                                        <!-- Medication -->
-                                        <div class="mb-3">
-                                            <label for="medicationName" class="form-label">Medication Name:</label>
-                                            <input type="text" class="form-control" id="medicationName" name="medicationName" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="medicationPrice" class="form-label">Medication Price:</label>
-                                            <input type="text" class="form-control" id="medicationPrice" name="medicationPrice" required>
-                                        </div>
-                    
                                     </form>
                                 </div>
-                    
-                                <!-- Modal Footer -->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="submitTreatment()">Submit Treatment</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="submitExamineDetails()">Save changes</button> -->
+                                    <button type="submit" class="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="modal" id="acceptExamineModal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Accept Examine</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                    
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <!-- Form elements for examination details -->
-                                    <form id="acceptExamineForm">
-                                        <div class="mb-3">
-                                            <label for="mcodeExamine" class="form-label">MCode (List of Codes for Medicine):</label>
-                                            <input type="text" class="form-control" id="mcodeExamine" name="mcodeExamine" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="examDatetime" class="form-label">Exam Datetime:</label>
-                                            <input type="datetime-local" class="form-control" id="examDatetime" name="examDatetime" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="doctorID" class="form-label">Doctor ID:</label>
-                                            <input type="text" class="form-control" id="doctorID" name="doctorID" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="numberOfMedExamine" class="form-label">Number of Med:</label>
-                                            <input type="number" class="form-control" id="numberOfMedExamine" name="numberOfMedExamine" required>
-                                        </div>
-                                    </form>
-                                </div>
-                    
-                                <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="submitExamine()">Submit Examine</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+
+
+
+
                     <!-- end tab 1-->
 
                     <!--Tab 2-->
@@ -429,7 +387,6 @@
                         
     
                     </div>
-                    
                     <!--end tab 2-->
 
                     <!-- Tab 3 -->
@@ -485,12 +442,7 @@
                         </div>
 
 
-                        <div id="exportOption" style="display: none;">
-                            <p>Export Options:</p>
-                            <button class="btn btn-primary" onclick="">Export Infomation</button>
-                            <button class="btn btn-primary" onclick="exportPayment()">Export Payment</button>
-                            <!-- Add more export options if needed -->
-                        </div>
+                        
                     </div>
 
                     <!-- Report modal-->
@@ -503,286 +455,9 @@
                             right: 0;
                         }
                     </style>
-                    <!--Treatment info modal-->
-                    <div class="modal wide-modal" id="patientTreatmentodal">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Patient Information</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="firstName" class="form-label">First Name:</label>
-                                            <input type="text" class="form-control" id="firstName" readonly>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="lastName" class="form-label">Last Name:</label>
-                                            <input type="text" class="form-control" id="lastName" readonly>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="gender" class="form-label">Gender:</label>
-                                            <input type="text" class="form-control" id="gender" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
-                                            <input type="text" class="form-control" id="phoneNumber" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="patientID" class="form-label">Patient ID:</label>
-                                            <input type="text" class="form-control" id="patientID" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="address" class="form-label">Address:</label>
-                                            <input type="text" class="form-control" id="address" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="doctorCode" class="form-label">Doctor Code:</label>
-                                            <input type="text" class="form-control" id="doctorCode" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="startTreatment" class="form-label">Start Treatment:</label>
-                                            <input type="text" class="form-control" id="startTreatment" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="endTreatment" class="form-label">End Treatment:</label>
-                                            <input type="text" class="form-control" id="endTreatment" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="doctorID" class="form-label">Doctor ID:</label>
-                                            <input type="text" class="form-control" id="doctorID" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="visitCode" class="form-label">Visit Code:</label>
-                                            <input type="text" class="form-control" id="visitCode" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="medicineList" class="form-label">Medicine List:</label>
-                                            <textarea class="form-control" id="medicineList" readonly></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="totalPrice" class="form-label">Total Price:</label>
-                                            <input type="text" class="form-control" id="totalPrice" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-
-                    <!--Examine info modal-->
-                    <div class="modal wide-modal" id="patientTreatmentodal">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Patient Information</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="firstName" class="form-label">First Name:</label>
-                                            <input type="text" class="form-control" id="firstName" readonly>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="lastName" class="form-label">Last Name:</label>
-                                            <input type="text" class="form-control" id="lastName" readonly>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="gender" class="form-label">Gender:</label>
-                                            <input type="text" class="form-control" id="gender" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
-                                            <input type="text" class="form-control" id="phoneNumber" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="patientID" class="form-label">Patient ID:</label>
-                                            <input type="text" class="form-control" id="patientID" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="address" class="form-label">Address:</label>
-                                            <input type="text" class="form-control" id="address" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="doctorCode" class="form-label">Doctor Code:</label>
-                                            <input type="text" class="form-control" id="doctorCode" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="startTreatment" class="form-label">Start Treatment:</label>
-                                            <input type="text" class="form-control" id="startTreatment" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="endTreatment" class="form-label">End Treatment:</label>
-                                            <input type="text" class="form-control" id="endTreatment" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="doctorID" class="form-label">Doctor ID:</label>
-                                            <input type="text" class="form-control" id="doctorID" readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="visitCode" class="form-label">Visit Code:</label>
-                                            <input type="text" class="form-control" id="visitCode" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="medicineList" class="form-label">Medicine List:</label>
-                                            <textarea class="form-control" id="medicineList" readonly></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="totalPrice" class="form-label">Total Price:</label>
-                                            <input type="text" class="form-control" id="totalPrice" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Modal for Export Payment -->
-                    <div class="modal wide-modal" id="exportPaymentModal">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Export Payment Information</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="patientName" class="form-label">Patient Name:</label>
-                                            <input type="text" class="form-control" id="patientName" readonly>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="patientID" class="form-label">Patient ID:</label>
-                                            <input type="text" class="form-control" id="patientID" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="phoneNumber" class="form-label">Phone Number:</label>
-                                            <input type="text" class="form-control" id="phoneNumber" readonly>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="admissionDate" class="form-label">Admission Date:</label>
-                                            <input type="text" class="form-control" id="admissionDate" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="billingDate" class="form-label">Billing Date:</label>
-                                            <input type="text" class="form-control" id="billingDate" readonly>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="treatmentFee" class="form-label">Treatment Fee:</label>
-                                            <input type="text" class="form-control" id="treatmentFee" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <label class="form-label">Medicine Bill:</label>
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Code</th>
-                                                        <th>Name</th>
-                                                        <th>Price</th>
-                                                        <th>Amount</th>
-                                                        <th>Total Cost</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="medicineBillTableBody">
-                                                    <!-- Medicine bill details will be added here dynamically -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label for="totalSum" class="form-label">Total Sum:</label>
-                                            <input type="text" class="form-control" id="totalSum" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Modal dislay patient infor-->
-                    <div class="modal fade" id="patientInfoModal" tabindex="-1" role="dialog" aria-labelledby="patientInfoModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="patientInfoModalLabel">Patient Information</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Dynamic patient details will be loaded here -->
-                                    <div id="patientDetails"></div>
-                                    <hr>
-                                    <h6>Treatments</h6>
-                                    <div id="patientTreatments"></div>
-                                    <hr>
-                                    <h6>Examinations</h6>
-                                    <div id="patientExaminations"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--patient_treatment_detail_modal-->
+                    <!--patient_treatment_detail_modal
+                    -->
                     <div class="modal fade" id="patient_treatment_detail_modal" tabindex="-1" aria-labelledby="patientTreatmentModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
@@ -884,7 +559,8 @@
                         </div>
                     </div>
 
-                    <!--patient_examine_detail_modal-->
+                    <!--patient_examine_detail_modal
+                    -->
                     <div class="modal fade" id="patient_examine_detail_modal" tabindex="-1" aria-labelledby="patientExamineModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
@@ -965,7 +641,8 @@
                     </div>
 
 
-                    <!--Inpatient Payment Modal-->
+                    <!--Inpatient Payment Modal
+                    -->
                     <div class="modal fade" id="exportInpatientPaymentModal" tabindex="-1" aria-labelledby="exportInpatientPaymentModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
@@ -1081,7 +758,8 @@
                         </div>
                     </div>
 
-                    <!--Outpatient Payment Modal-->
+                    <!--Outpatient Payment Modal
+                    -->
                     <div class="modal fade" id="exportOutpatientPaymentModal" tabindex="-1" aria-labelledby="exportOutpatientPaymentModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
@@ -1170,9 +848,6 @@
                     </div>
 
 
-
-
-                    
                 </div>
             </div>
         </div>
@@ -1215,20 +890,76 @@
     }
 
         $(document).ready(function () {
-
-                // Show the modal when the "Add New Patient" button is clicked
-                $('#addPatientButton').click(function () {
-                    $('#addPatientModal').modal('show');
-                });
-
-                
+            // Show the modal when the "Add New Patient" button is clicked
+            $('#addPatientButton').click(function () {
+                $('#addPatientModal').modal('show');
+            });
         });
+
+        $(document).ready(function () {
+            // Show the modal when the "Add New Patient" button is clicked
+            $('#addExamineButton').click(function () {
+                $('#addExamineModal').modal('show');
+            });
+        });
+
+        
 
         function editPatient(id) {
             // Implement logic to edit patient information
             console.log("Edit Patient clicked for ID: " + id);
         }
 
+        $(document).ready(function () {
+
+            // Show the modal when the "Add New Patient" button is clicked
+            $('#addPatientButton').click(function () {
+                $('#addPatientModal').modal('show');
+            });
+
+
+        });
+
+        $('#medicineCount').change(function() {
+            var count = $(this).val();
+            var container = $('#medicineInputContainer');
+            container.empty(); // Clear previous inputs
+
+            for (var i = 1; i <= count; i++) {
+                container.append('<div class="form-group">' +
+                    '<label for="medicineCode' + i + '">Medicine Code ' + i + '</label>' +
+                    '<input type="text" class="form-control" id="medicineCode' + i + '" name="medicineCode' + i + '">' +
+                    '</div>');
+            }
+        });
+
+        function submitExamineDetails() {
+            // var formData = $('#addExamineForm').serializeArray(); // This gets all form inputs
+            // var medicineData = [];
+
+            // for (var i = 1; i <= $('#medicineCount').val(); i++) {
+            //     medicineData.push({ code: $('#medicineCode' + i).val(), amount: /* Get the amount for each medicine */ });
+            // }
+
+            // // Add medicine data to form data
+            // formData.push({ name: 'medicines', value: JSON.stringify(medicineData) });
+
+            // $.ajax({
+            //     url: '/path_to_server_endpoint', // Replace with your server endpoint
+            //     type: 'POST',
+            //     data: formData,
+            //     success: function(response) {
+            //         // Handle success
+            //         $('#addExamineModal').modal('hide');
+            //     },
+            //     error: function(error) {
+            //         // Handle errors
+            //         console.error('Error submitting examine details:', error);
+            //     }
+            // });
+        }
+
+        //Tab 2
         //This is for search by doctor
         $(document).ready(function() {
             $('#search_by_doctor_button').click(function() {
@@ -1381,6 +1112,8 @@
         //     });
         // }
 
+
+        //Tab 3
         function exportInpatientDetail(patient) {
             // Assuming 'patient' is an object that contains all the necessary information.
             // Populate the modal fields with patient information.
@@ -1532,227 +1265,6 @@
             });
         }
         
-        //function exportInpatientReport(patientId, ipVisit) {
-        //     $.ajax({
-        //         url: '/get_patient_report',
-        //         data: {'patient_id': patientId, 'ip_visit': ipVisit},
-        //         type: 'GET',
-        //         success: function(response) {
-        //              // Assuming data is the JSON response from the Flask route
-        //                 $('#firstName').val(data.patient_name.split(' ')[0]);
-        //                 $('#lastName').val(data.patient_name.split(' ')[1]);
-        //                 $('#patientID').val(data.patient_id);
-        //                 // ... Set other patient details ...
-                        
-        //                 // Set treatment and doctor details
-        //                 $('#startTreatment').val(data.treatment_start);
-        //                 $('#endTreatment').val(data.treatment_end);
-        //                 $('#doctorID').val(data.doctor_id);
-        //                 $('#visitCode').val(ipVisit);
-
-        //                 // Set medicine list
-        //                 let medicineText = data.medicine_list.map(med => 
-        //                     `${med.code} - ${med.name} - $${med.price} x ${med.amount} = $${med.total_cost}`
-        //                 ).join('\n');
-        //                 $('#medicineList').val(medicineText);
-
-        //                 // Set total price
-        //                 $('#totalPrice').val(`$${data.total_price}`);
-
-        //                 // Show the modal
-        //                 $('#patientTreatmentModal').modal('show');
-        //             $('#reportModal').modal('show');
-        //         },
-        //         error: function(error) {
-        //             console.log(error);
-        //             alert('Error fetching report data');
-        //         }
-        //     });
-        // }
-
-        // Function to handle the export of a specific patient report
-        function exportReport(patientId) {
-            // Implement logic to export the report for the selected patient
-            console.log('Export report for patient ID:', patientId);
-        }
-
-        function addTreatment(patientCode) {
-            // Implement logic to show the Accept Treatment modal for the selected patient
-            console.log("Add Treatment clicked for patient Code: " + patientCode);
-            
-            // Show the Accept Treatment modal
-            $('#acceptTreatmentModal').modal('show');
-
-            // Optionally, you can set patientCode in the modal for further processing
-            $('#acceptTreatmentModal').data('patientCode', patientCode);
-        }
-
-        function addExamine(patientCode) {
-            // Implement logic to add examine for the selected patient
-            console.log("Add Examine clicked for patient Code: " + patientCode);
-        }
-
-        function addExamine(patientCode) {
-            // Implement logic to show the Accept Examine modal for the selected patient
-            console.log("Add Examine clicked for patient Code: " + patientCode);
-
-            // Show the Accept Examine modal
-            $('#acceptExamineModal').modal('show');
-
-            // Optionally, you can set patientCode in the modal for further processing
-            $('#acceptExamineModal').data('patientCode', patientCode);
-        }
-
-        // Function to submit the examination details
-        function submitExamine() {
-            // Retrieve values from modal form elements (mcode, exam datetime, doctor id, number of med)
-            var mcodeExamine = document.getElementById('mcodeExamine').value;
-            var examDatetime = document.getElementById('examDatetime').value;
-            var doctorID = document.getElementById('doctorID').value;
-            var numberOfMedExamine = document.getElementById('numberOfMedExamine').value;
-
-            // Retrieve patientCode from the modal data
-            var patientCode = $('#acceptExamineModal').data('patientCode');
-
-            // Additional logic to handle the submission of examination details
-            console.log('Patient Code: ' + patientCode);
-            console.log('MCode: ' + mcodeExamine);
-            console.log('Exam Datetime: ' + examDatetime);
-            console.log('Doctor ID: ' + doctorID);
-            console.log('Number of Med: ' + numberOfMedExamine);
-
-            // Perform further processing or submission logic
-
-            // Close the modal
-            $('#acceptExamineModal').modal('hide');
-        }
-
-        // Function to submit the treatment details
-        function submitTreatment() {
-            // Retrieve values from modal form elements for IP Detail
-            var ICode = document.getElementById('ICode').value;
-            var admissionDate = document.getElementById('admissionDate').value;
-            var diagnosis = document.getElementById('diagnosis').value;
-            var sickroom = document.getElementById('sickroom').value;
-            var dischargeDate = document.getElementById('dischargeDate').value;
-            var fee = document.getElementById('fee').value;
-
-            // Retrieve values from modal form elements for Treat Attribute
-            var doctorID = document.getElementById('doctorID').value;
-            var startDatetime = document.getElementById('startDatetime').value;
-            var endDatetime = document.getElementById('endDatetime').value;
-
-            // Retrieve values from modal form elements for Medication
-            var medicationName = document.getElementById('medicationName').value;
-            var medicationPrice = document.getElementById('medicationPrice').value;
-
-            // Retrieve patientCode from the modal data
-            var patientCode = $('#acceptTreatmentModal').data('patientCode');
-
-            // Additional logic to handle the submission of treatment details
-            console.log('Patient Code: ' + patientCode);
-            console.log('ICode: ' + ICode);
-            console.log('Admission Date: ' + admissionDate);
-            console.log('Diagnosis: ' + diagnosis);
-            console.log('Sickroom: ' + sickroom);
-            console.log('Discharge Date: ' + dischargeDate);
-            console.log('Fee: ' + fee);
-            console.log('Doctor ID: ' + doctorID);
-            console.log('Start Datetime: ' + startDatetime);
-            console.log('End Datetime: ' + endDatetime);
-            console.log('Medication Name: ' + medicationName);
-            console.log('Medication Price: ' + medicationPrice);
-
-            // Perform further processing or submission logic
-
-            // Close the modal
-            $('#acceptTreatmentModal').modal('hide');
-        }
-
-         // Function to handle export button click
-        function viewInformation() {
-            const patientInfo = {
-                patientID: "P001",
-                firstName: "John",
-                lastName: "Doe",
-                visitCode: "V001",
-                phoneNumber: "123-456-7890",
-                address: "123 Main St",
-                dateOfBirth: "1990-01-01",
-                gender: "Male",
-                startTreatment: "2023-01-01 08:00 AM",
-                endTreatment: "2023-01-10 05:00 PM",
-                doctorID: "D001",
-                medicineList: "Medicine A, Medicine B, Medicine C",
-                totalPrice: "$500"
-            };
-
-            // Populate the patient information modal with dummy values
-            document.getElementById('patientID').value = patientInfo.patientID;
-            document.getElementById('firstName').value = patientInfo.firstName;
-            document.getElementById('lastName').value = patientInfo.lastName;
-            document.getElementById('visitCode').value = patientInfo.visitCode;
-            document.getElementById('phoneNumber').value = patientInfo.phoneNumber;
-            document.getElementById('address').value = patientInfo.address;
-            document.getElementById('dateOfBirth').value = patientInfo.dateOfBirth;
-            document.getElementById('gender').value = patientInfo.gender;
-            document.getElementById('startTreatment').value = patientInfo.startTreatment;
-            document.getElementById('endTreatment').value = patientInfo.endTreatment;
-            document.getElementById('doctorID').value = patientInfo.doctorID;
-            document.getElementById('medicineList').value = patientInfo.medicineList;
-            document.getElementById('totalPrice').value = patientInfo.totalPrice;
-
-            // Show the patient information modal
-            $('#patientInfoModal').modal('show');
-        }
-
-        function exportPayment() {
-            // Dummy values for payment information (replace with actual values from backend)
-            const paymentInfo = {
-                patientName: "Tien Nguyen Van",
-                patientID: "000000001",
-                phoneNumber: "0837414012",
-                admissionDate: "2023-01-01",
-                billingDate: "2023-01-15",
-                treatmentFee: "$200",
-                medicineBill: [
-                    { code: "M001", name: "Medicine A", amount: 2, price: "$25", totalCost: "$50" },
-                    { code: "M002", name: "Medicine B", amount: 1, price: "$30", totalCost: "$30" },
-                    { code: "M003", name: "Medicine C", amount: 3, price: "$20", totalCost: "$70" }
-                    // Add more medicine bill details as needed
-                ],
-                totalSum: "$250"
-            };
-
-            // Populate the export payment modal with actual values
-            document.getElementById('patientName').value = paymentInfo.patientName;
-            document.getElementById('patientID').value = paymentInfo.patientID;
-            document.getElementById('phoneNumber').value = paymentInfo.phoneNumber;
-            document.getElementById('admissionDate').value = paymentInfo.admissionDate;
-            document.getElementById('billingDate').value = paymentInfo.billingDate;
-            document.getElementById('treatmentFee').value = paymentInfo.treatmentFee;
-
-            // Populate the medicine bill details dynamically
-            const medicineBillTableBody = document.getElementById('medicineBillTableBody');
-            medicineBillTableBody.innerHTML = ""; // Clear previous entries
-            paymentInfo.medicineBill.forEach((medicine) => {
-                const row = `<tr>
-                                <td>${medicine.code}</td>
-                                <td>${medicine.name}</td>
-                                <td>${medicine.price}</td>
-                                <td>${medicine.amount}</td>
-                                <td>${medicine.totalCost}</td>
-                            </tr>`;
-                medicineBillTableBody.innerHTML += row;
-            });
-
-            document.getElementById('totalSum').value = paymentInfo.totalSum;
-
-            // Show the export payment modal
-            $('#exportPaymentModal').modal('show');
-        }
-            
-
         function logout() {
             // Show a confirmation dialog to the user
             var confirmLogout = confirm("Are you sure you want to log out?");
