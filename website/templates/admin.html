@@ -1200,9 +1200,9 @@
                         var medicineRow = $('<tr>').append(
                             $('<td>').text(medicine.code),
                             $('<td>').text(medicine.name),
-                            $('<td>').text('$' + medicine.medication_price.toFixed(2)),
+                            $('<td>').text(medicine.medication_price.toFixed(2)),
                             $('<td>').text(medicine.amount),
-                            $('<td>').text('$' + medicine.total_cost.toFixed(2))
+                            $('<td>').text( medicine.total_cost.toFixed(2))
                         );
                         $medicineListTable.append(medicineRow);
                     });
@@ -1249,9 +1249,9 @@
                         var medicineRow = $('<tr>').append(
                             $('<td>').text(medicine.code),
                             $('<td>').text(medicine.name),
-                            $('<td>').text('$' + medicine.medication_price.toFixed(2)),
+                            $('<td>').text(medicine.medication_price.toFixed(2)),
                             $('<td>').text(medicine.amount),
-                            $('<td>').text('$' + medicine.total_cost.toFixed(2))
+                            $('<td>').text(medicine.total_cost.toFixed(2))
                         );
                         $medicineListTable1.append(medicineRow);
                     });
