@@ -13,7 +13,6 @@ actor = Blueprint('actor', __name__)
 def patient():
     return render_template('patient.html')
 
-@login_required
 @actor.route('/admin')
 def admin():
     # Query all patients from the database
@@ -77,7 +76,40 @@ def add_examine():
     exam_fee = request.form.get('e_fee')
     #medicines = request.form.getlist('medicines') 
 
-    
+    #for outpatient table
+    outpatient = Outpatient.query.filter_by(OCode=patient_code).first()
+    if not outpatient:
+        patient = Patient.query.filter_by(Code=patient_code).first()
+        if patient:
+            new_outpatient = Outpatient(OCode=patient_code)
+            new_outpatient.patient = patient
+            # db.session.add(new_outpatient)
+            # db.session.commit()
+        
+    #for op_detail table
+    existing_op_detail = OpDetail.query.filter_by(OCode=patient_code, OP_visit=op_visit).first()
+    if not existing_op_detail.op_detail:
+        new_op_detail = OpDetail(OCode = patient_code, OP_visit=op_visit)
+        # db.session.add(new_op_detail)
+        # db.session.commit() 
+        
+    #for examine_attributes
+    existing_examine_detail = ExamineDetail.query.filter_by(OCode=patient_code, 
+                                                            OP_visit=op_visit, 
+                                                            DoctorID=doctor_id,
+                                                            Exam_datetime = exam_date).first()
+    if not existing_examine_detail:
+        new_examine_detail = ExamineDetail(
+            OCode=patient_code,
+            OP_visit=op_visit,
+            DoctorID=doctor_id,
+            Exam_datetime=exam_date,
+            Next_datetime=next_date,
+            Diagnosis=diagnosis,
+            Fee=exam_fee
+        )
+        # db.session.add(new_examine_detail)
+        # db.session.commit()
 
     return redirect(url_for('actor.admin'))
 
