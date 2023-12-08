@@ -4,7 +4,7 @@ from .model import Patient, Employee, Doctor, Nurse, PhoneNumber, Inpatient, IpD
 from . import db
 from sqlalchemy import func, and_
 from sqlalchemy.orm import aliased
-
+from datetime import datetime
 
 actor = Blueprint('actor', __name__)
 
@@ -191,98 +191,134 @@ def search_by_patient():
             }
         })
 
-    print("Number of elements in patient_list:", len(patient_list))
-    print("Treatment type of the first element in patient_list:", patient_list[0]['phone_number'])
+    # print("Number of elements in patient_list:", len(patient_list))
+    # print("Treatment type of the first element in patient_list:", patient_list[0]['phone_number'])
 
     return jsonify(patient_list)
 
 
-@actor.route('/export_inpatient_report', methods=['GET'])
-def export_inpatient_report():
+@actor.route('/export_inpatient_payment', methods=['GET'])
+def export_inpatient_payment():
     patient_id = request.args.get('patient_id')
     ip_visit = request.args.get('ip_visit')  # This should be passed in the request
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    doctor_id = request.args.get('doctor_id')
+    treatment_fee = request.args.get('treatment_fee')
 
-    # Query to get patient details
-    patient = Patient.query.get(patient_id)
+    try:
+        start_datetime = datetime.strptime(start_date, '%a, %d %b %Y %H:%M:%S %Z')
+        end_datetime = datetime.strptime(end_date, '%a, %d %b %Y %H:%M:%S %Z')
+    except ValueError as e:
+        return jsonify({'error': 'Invalid date format'}), 400
 
-    # Query to get medication usage for this inpatient treatment
-    medication_usage = db.session.query(Use, Medication).join(
+    medication_usage = db.session.query(
+        Use.MCode.label('use_mcode'), 
+        Use.ICode.label('use_icode'),
+        Use.IP_visit.label('use_ip_visit'),
+        Use.DoctorID.label('use_doctor_id'),
+        Use.Start_datetime.label('use_start_datetime'),
+        Use.End_datetime.label('use_end_datetime'),
+        Use.NumOfMed.label('use_num_of_med'),
+        Medication.Code.label('medication_code'),
+        Medication.Name.label('medication_name'),
+        Medication.Price.label('medication_price'),
+        Medication.Expired_Date.label('medication_expired_date')
+    ).join(
         Medication, Use.MCode == Medication.Code
     ).filter(
         Use.ICode == patient_id,
-        Use.IP_visit == ip_visit
+        Use.IP_visit == ip_visit, 
+        Use.DoctorID == doctor_id, 
+        # If you're filtering by datetime, make sure you have converted the input strings to datetime objects
+        Use.Start_datetime == start_datetime,
+        Use.End_datetime == end_datetime
     ).all()
 
-    # Calculate the total medication cost
-    medication_cost = sum(
-        use.NumOfMed * medication.Price for use, medication in medication_usage
-    )
-
-    # Get the treatment fee (assuming it's stored in IpDetail or similar)
-    treatment_fee = IpDetail.query.filter_by(
-        ICode=patient_id, 
-        IP_visit=ip_visit
-    ).first().Fee
-
-    # Construct the medication details list for the report
-    medication_details = [{
-        "code": medication.Code,
-        "name": medication.Name,
-        "price": medication.Price,
-        "amount": use.NumOfMed,
-        "total_cost": use.NumOfMed * medication.Price
-    } for use, medication in medication_usage]
-
-    # Construct the report data
-    report_data = {
-        "patient_name": patient.First_Name + " " + patient.Last_Name,
-        "patient_id": patient_id,
-        "phone_number": patient.Phone_number,
-        "admission_date": patient.inpatients[0].Admission_date.strftime("%Y-%m-%d"),  # Assuming inpatients is a list
-        "billing_date": "...",  # You will need to provide this
-        "treatment_fee": treatment_fee,
-        "medication_details": medication_details,
-        "total_cost": treatment_fee + medication_cost
-    }
-
-    return jsonify(report_data)
-
-    patient_id = request.args.get('patient_id')
-    ip_visit = request.args.get('ip_visit')  # Assuming this is needed to identify the treatment
-
-    # Fetch patient and treatment details
-    patient = Patient.query.get(patient_id)
-    treatment = IpDetail.query.filter_by(ICode=patient_id, IP_visit=ip_visit).first()
-    medicine_uses = Use.query.filter_by(ICode=patient_id, IP_visit=ip_visit).all()
-    
-    # Construct the medicine list and calculate the total price
     medicine_list = []
-    total_price = 0
-    for use in medicine_uses:
-        medication = Medication.query.get(use.MCode)
+    total_med_price = 0
+    for use in medication_usage:
+        # medication = Medication.query.get(use.MCode)
         medicine_info = {
-            'code': medication.Code,
-            'name': medication.Name,
-            'price': medication.Price,
-            'amount': use.NumOfMed,
-            'total_cost': use.NumOfMed * medication.Price
+            'code': use.use_mcode,
+            'name': use.medication_name,
+            "amount": use.use_num_of_med,
+            "medication_name": use.medication_name,
+            "medication_price": use.medication_price,
+            "total_cost": use.use_num_of_med * use.medication_price
         }
-        total_price += medicine_info['total_cost']
+        total_med_price += medicine_info['total_cost']
         medicine_list.append(medicine_info)
-    
-    # Prepare the report data
-    report_data = {
-        'patient_name': patient.First_Name + ' ' + patient.Last_Name,
-        'patient_id': patient_id,
-        # ... other patient details ...
-        'treatment_fee': treatment.Fee if treatment else 0,
-        'medicine_list': medicine_list,
-        'total_price': total_price
-    }
 
+    total_cost = total_med_price + int(treatment_fee)
+
+    # # Construct the report data
+    report_data = {
+        "medicine_list": medicine_list,
+        "total_med_price": total_med_price,
+        "total_cost": total_cost
+    }
     return jsonify(report_data)
 
 
+@actor.route('/export_outpatient_payment', methods=['GET'])
+def export_outpatient_payment():
+    patient_id = request.args.get('patient_id')
+    op_visit = request.args.get('op_visit')  # This should be passed in the request
+    exam_date = request.args.get('exam_date')
+    doctor_id = request.args.get('doctor_id')
+    examine_fee = request.args.get('examine_fee')
+
+    try:
+        exam_datetime = datetime.strptime(exam_date, '%a, %d %b %Y %H:%M:%S %Z')
+    except ValueError as e:
+        return jsonify({'error': 'Invalid date format'}), 400
+
+    medication_usage = db.session.query(
+        UseFor.MCode.label('usefor_mcode'), 
+        UseFor.OCode.label('usefor_ocode'),
+        UseFor.OP_visit.label('usefor_op_visit'),
+        UseFor.DoctorID.label('usefor_doctor_id'),
+        UseFor.Exam_datetime.label('usefor_exam_datetime'),
+        UseFor.NumOfMed.label('usefor_num_of_med'),
+        Medication.Code.label('medication_code'),
+        Medication.Name.label('medication_name'),
+        Medication.Price.label('medication_price'),
+        Medication.Expired_Date.label('medication_expired_date')
+    ).join(
+        Medication, UseFor.MCode == Medication.Code
+    ).filter(
+        UseFor.OCode == patient_id,
+        UseFor.OP_visit == op_visit, 
+        UseFor.DoctorID == doctor_id, 
+        # If you're filtering by datetime, make sure you have converted the input strings to datetime objects
+        UseFor.Exam_datetime == exam_datetime
+    ).all()
+
+    medicine_list = []
+    total_med_price = 0
+    for usefor in medication_usage:
+        # medication = Medication.query.get(use.MCode)
+        medicine_info = {
+            'code': usefor.usefor_mcode,
+            'name': usefor.medication_name,
+            "amount": usefor.usefor_num_of_med,
+            "medication_name": usefor.medication_name,
+            "medication_price": usefor.medication_price,
+            "total_cost": usefor.usefor_num_of_med * usefor.medication_price
+        }
+        total_med_price += medicine_info['total_cost']
+        medicine_list.append(medicine_info)
+
+    total_cost = total_med_price + int(examine_fee)
+
+    # # Construct the report data
+    report_data = {
+        "medicine_list": medicine_list,
+        "total_med_price": total_med_price,
+        "total_cost": total_cost
+    }
+    return jsonify(report_data)
 
 @actor.route('/doctor')
 def doctor():
